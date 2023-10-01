@@ -1,36 +1,11 @@
 import re
 from django.db import models
 from django.core import validators
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import (
+    AbstractBaseUser, PermissionsMixin, UserManager
+)
 
-
-
-
-
-
-class UserManager(BaseUserManager):
-    def create_user(self, email, username, password=None, **extra_fields):
-        if not email:
-            raise ValueError('El campo de correo electrónico debe estar configurado')
-        email = self.normalize_email(email)
-        user = self.model(email=email, username=username, **extra_fields)
-        user.set_password(password)
-        user.save(using=self._db)
-        return user
-
-    def create_superuser(self, email, username, password=None, **extra_fields):
-        extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('is_superuser', True)
-
-        if extra_fields.get('is_staff') is not True:
-            raise ValueError('Los superusuarios deben tener is_staff=True.')
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Los superusuarios deben tener is_superuser=True.')
-
-        return self.create_user(email, username, password, **extra_fields)
-
-class Usuario(AbstractBaseUser):
+class Usuario(AbstractBaseUser,PermissionsMixin):
     TIPO_USUARIO_CHOICES = [
         ('administrativo', 'Administrativo'),
         ('instructor', 'Instructor'),
@@ -55,7 +30,6 @@ class Usuario(AbstractBaseUser):
     tipo_usuario = models.CharField('Tipo de Usuario', max_length=20, choices=TIPO_USUARIO_CHOICES)
     is_active = models.BooleanField('Activo', default=True)
     is_staff = models.BooleanField('Equipo', default=False)
-
     date_joined = models.DateTimeField('Fecha de registro', auto_now_add=True)
 
     USERNAME_FIELD = 'username'
@@ -76,20 +50,4 @@ class Usuario(AbstractBaseUser):
     def get_short_name(self):
         return str(self).split(' ')[0]
 
-    groups = models.ManyToManyField(
-        Group,
-        verbose_name='Grupos',
-        blank=True,
-        help_text='Grupos a los que pertenece este usuario.',
-        related_name='user_set',
-        related_query_name='user'
-    )
-
-    user_permissions = models.ManyToManyField(
-        Permission,
-        verbose_name='Permisos de usuario',
-        blank=True,
-        help_text='Permisos específicos para este usuario.',
-        related_name='user_set',
-        related_query_name='user'
-    )
+    
