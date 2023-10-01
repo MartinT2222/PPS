@@ -1,0 +1,1 @@
+Gestión de horarios y disponibilidad de instructores.

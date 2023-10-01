@@ -1,0 +1,1 @@
+Registro de usuarios (alumnos, instructores, administrativos).
