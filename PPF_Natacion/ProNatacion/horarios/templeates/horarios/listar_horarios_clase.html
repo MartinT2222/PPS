@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ block.super }} - Lista de Clases
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <h1>Listado de Horarios de Clase</h1>
+
+    <h2>Clases de Natación</h2>
+
+    <ul class="list-group">
+        {% for clase in clases %}
+        <li class="list-group-item">
+            <strong>Especialidad:</strong> {{ clase.nombre }}
+            <br>
+            <strong>Instructor:</strong> {{ clase.instructor }}
+            <br>
+            <strong>Día:</strong> {{ clase.dia_semana }}
+            <br>
+            <strong>Hora de inicio:</strong> {{ clase.hora_inicio }}
+            <br>
+            <strong>Hora de fin:</strong> {{ clase.hora_fin }}
+            <br>
+            <button class="btn btn-primary" onclick="inscribirse('{{ clase.nombre }}', '{{ clase.instructor }}')">Inscribirse</button>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+
+<!-- Incluir Bootstrap JS y jQuery -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script>
+    function inscribirse(especialidad, instructor) {
+        // Aquí puedes implementar la lógica para registrar la inscripción del alumno
+        // Puedes enviar la información de la especialidad y el instructor a tu backend para procesar la inscripción
+        // Por ejemplo, puedes mostrar un mensaje de confirmación al usuario después de la inscripción
+        alert('Inscripción exitosa a la clase de ' + especialidad + ' con el instructor ' + instructor);
+    }
+</script>
+
+{% endblock %}

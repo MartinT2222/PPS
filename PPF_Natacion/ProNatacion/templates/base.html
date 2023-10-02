@@ -23,7 +23,7 @@
             </div>
             <div class="navbar-collapse collapse" id="navbar-main">
                 <ul class="nav navbar-nav">
-                    <li><a href="">Clases</a></li>
+                    <li><a href="{% url 'horarios:listar_horarios_clase' %}">Clases</a></li>
                     <li><a href="">Reservas</a></li>
                     {% if user.is_staff or user.is_superuser %}
                         <li><a href="">Cuentas</a></li>
