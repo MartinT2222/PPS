@@ -27,7 +27,7 @@ class VistaInicio(LoginRequiredMixin, DetailView):
 # Vista para iniciar sesión
 class IniciarSesion(LoginView):
     model = User
-    template_name = 'cuentas/login.html'
+    template_name = 'cuentas/update_password.html'
 
 # Vista para cerrar sesión
 class CerrarSesion(LogoutView):
@@ -38,7 +38,7 @@ class VistaRegistro(CreateView):
     model = User
     template_name = 'cuentas/registro.html'
     form_class = FormularioCreacionUsuarioAdmin
-    success_url = reverse_lazy('cuentas:inicio')
+    success_url = reverse_lazy('index')
 
     def form_valid(self, form):
         messages.info(self.request, "¡Registro exitoso! Inicie sesión.")
@@ -69,7 +69,7 @@ def solicitud_reset_contrasena(request):
                         send_mail(subject, email, "admin@ejemplo.com", [user.email], fail_silently=False)
                     except BadHeaderError:
                         return HttpResponse('Encabezado no válido.')
-                    return redirect('cuentas:reset_contrasena_ok')
+                    return redirect('cuentas:password_reset_done')
     form = PasswordResetForm()
     return render(request=request, template_name="cuentas/password/password_reset.html", context={"form": form})
 
@@ -78,8 +78,8 @@ class VistaActualizarUsuario(LoginRequiredMixin, UpdateView):
     model = User
     login_url = reverse_lazy('cuentas:login')
     template_name = 'cuentas/update_user.html'
-    fields = ['nombre', 'correo_electronico']
-    success_url = reverse_lazy('cuentas:inicio')
+    fields = ['nombre', 'email']
+    success_url = reverse_lazy('cuentas:index')
 
     def get_object(self):
         return self.request.user
@@ -88,7 +88,7 @@ class VistaActualizarUsuario(LoginRequiredMixin, UpdateView):
 class VistaActualizarContrasena(LoginRequiredMixin, FormView):
     template_name = 'cuentas/update_password.html'
     login_url = reverse_lazy('cuentas:login')
-    success_url = reverse_lazy('cuentas:inicio')
+    success_url = reverse_lazy('cuentas:index')
     form_class = PasswordChangeForm
 
     def get_form_kwargs(self):
@@ -101,12 +101,12 @@ class VistaActualizarContrasena(LoginRequiredMixin, FormView):
         return super(VistaActualizarContrasena, self).form_valid(form)
 
 # Asignación de nombres a las vistas de clase para las URLs
-inicio = VistaInicio.as_view()
+index = VistaInicio.as_view()
 login = IniciarSesion.as_view()
 logout = CerrarSesion.as_view()
 registro = VistaRegistro.as_view()
 update_user = VistaActualizarUsuario.as_view()
-actualizar_contrasena = VistaActualizarContrasena.as_view()
+update_password = VistaActualizarContrasena.as_view()
 
 
 

@@ -7,7 +7,9 @@ from instructores.models import Agenda
 
 class Alumno(models.Model):
     alumno_id = models.AutoField(primary_key=True)
-    User = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    
+    
     SEXO = (
         ("MAS", "Maculino"),
         ("FEM", "Feminino")
@@ -24,7 +26,7 @@ class Alumno(models.Model):
                                 validators=[phone_regex],
                                 max_length=17, null=True, blank=True)
     def __str__(self):
-        return self.User.get_full_name()
+        return self.user.get_full_name()
     
 class ProgresoAlumno(models.Model):
     progreso_id = models.AutoField(primary_key=True)
@@ -34,7 +36,7 @@ class ProgresoAlumno(models.Model):
     descripcion_progreso = models.TextField()
 
     def __str__(self):
-        return f'Progreso para {self.alumno.User.get_full_name()} en {self.fecha_progreso}'
+        return f'Progreso para {self.alumno.user.get_full_name()} en {self.fecha_progreso}'
     
 class Consulta(models.Model):
     agenda = OneToOneField(Agenda, on_delete=models.CASCADE, related_name='consulta')
