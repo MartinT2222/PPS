@@ -9,4 +9,4 @@ class Reserva(models.Model):
     fecha_reserva = models.DateField()
 
     def __str__(self):
-        return f'Reserva {self.reserva_id} - Alumno: {self.alumno.usuario.get_full_name()} - Clase: {self.clase.nombre}'
+        return f'Reserva {self.reserva_id} - Alumno: {self.alumno.User.get_full_name()} - Clase: {self.clase.nombre}'

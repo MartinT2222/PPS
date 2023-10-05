@@ -12,30 +12,30 @@ from django.views.generic import CreateView, UpdateView, FormView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import PasswordChangeForm, PasswordResetForm
 from django.contrib.auth.views import LoginView, LogoutView
-from .models import Usuario
+from .models import User
 from .forms import FormularioCreacionUsuarioAdmin
 
 # Vista para la página de inicio
 class VistaInicio(LoginRequiredMixin, DetailView):
-    model = Usuario
+    model = User
     template_name = 'cuentas/index.html'
-    login_url = reverse_lazy('cuentas:iniciar_sesion')
+    login_url = reverse_lazy('cuentas:login')
 
     def get_object(self):
         return self.request.user
 
 # Vista para iniciar sesión
 class IniciarSesion(LoginView):
-    model = Usuario
-    template_name = 'cuentas/iniciar_sesion.html'
+    model = User
+    template_name = 'cuentas/login.html'
 
 # Vista para cerrar sesión
 class CerrarSesion(LogoutView):
-    template_name = 'cuentas/sesion_cerrada.html'
+    template_name = 'cuentas/logged_out.html'
 
 # Vista para registrar un nuevo usuario
 class VistaRegistro(CreateView):
-    model = Usuario
+    model = User
     template_name = 'cuentas/registro.html'
     form_class = FormularioCreacionUsuarioAdmin
     success_url = reverse_lazy('cuentas:inicio')
@@ -50,11 +50,11 @@ def solicitud_reset_contrasena(request):
         form = PasswordResetForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data['email']
-            associated_users = Usuario.objects.filter(Q(email=data))
+            associated_users = User.objects.filter(Q(email=data))
             if associated_users.exists():
                 for user in associated_users:
                     subject = "Solicitud de Restablecimiento de Contraseña"
-                    email_template_name = "cuentas/contrasena/reset_contrasena_email.txt"
+                    email_template_name = "cuentas/password/password_reset_email.txt"
                     c = {
                         "email": user.email,
                         'domain':'127.0.0.1:8000',
@@ -71,13 +71,13 @@ def solicitud_reset_contrasena(request):
                         return HttpResponse('Encabezado no válido.')
                     return redirect('cuentas:reset_contrasena_ok')
     form = PasswordResetForm()
-    return render(request=request, template_name="cuentas/contrasena/reset_contrasena.html", context={"form": form})
+    return render(request=request, template_name="cuentas/password/password_reset.html", context={"form": form})
 
 # Vista para actualizar los datos del usuario
 class VistaActualizarUsuario(LoginRequiredMixin, UpdateView):
-    model = Usuario
-    login_url = reverse_lazy('cuentas:iniciar_sesion')
-    template_name = 'cuentas/actualizar_usuario.html'
+    model = User
+    login_url = reverse_lazy('cuentas:login')
+    template_name = 'cuentas/update_user.html'
     fields = ['nombre', 'correo_electronico']
     success_url = reverse_lazy('cuentas:inicio')
 
@@ -86,8 +86,8 @@ class VistaActualizarUsuario(LoginRequiredMixin, UpdateView):
 
 # Vista para actualizar la contraseña del usuario
 class VistaActualizarContrasena(LoginRequiredMixin, FormView):
-    template_name = 'cuentas/actualizar_contrasena.html'
-    login_url = reverse_lazy('cuentas:iniciar_sesion')
+    template_name = 'cuentas/update_password.html'
+    login_url = reverse_lazy('cuentas:login')
     success_url = reverse_lazy('cuentas:inicio')
     form_class = PasswordChangeForm
 
@@ -102,8 +102,11 @@ class VistaActualizarContrasena(LoginRequiredMixin, FormView):
 
 # Asignación de nombres a las vistas de clase para las URLs
 inicio = VistaInicio.as_view()
-iniciar_sesion = IniciarSesion.as_view()
-cerrar_sesion = CerrarSesion.as_view()
+login = IniciarSesion.as_view()
+logout = CerrarSesion.as_view()
 registro = VistaRegistro.as_view()
-actualizar_usuario = VistaActualizarUsuario.as_view()
+update_user = VistaActualizarUsuario.as_view()
 actualizar_contrasena = VistaActualizarContrasena.as_view()
+
+
+

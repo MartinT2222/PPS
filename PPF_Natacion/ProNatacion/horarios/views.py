@@ -42,7 +42,7 @@ class CalendarioView(View):
     def get(self, request, instructor_id):
         # Obtiene la especialidad del instructor
         instructor = Instructor.objects.get(pk=instructor_id)
-        especialidad = instructor.especialidad
+        especialidad = instructor.especialidade
 
         # Crea el formulario con la especialidad
         form = ClaseForm(initial={'especialidad': especialidad})

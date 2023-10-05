@@ -1,8 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import Usuario
+from .models import User
 from .forms import FormularioCreacionUsuarioAdmin, FormularioAdminUsuario
-from django.contrib.auth.models import Group, Permission
 
 class AdminUsuario(BaseUserAdmin):
     add_form = FormularioAdminUsuario
@@ -32,4 +31,4 @@ class AdminUsuario(BaseUserAdmin):
 
 # Registrar el modelo Usuario con su administrador personalizado
 
-admin.site.register(Usuario, AdminUsuario)
+admin.site.register(User, AdminUsuario)

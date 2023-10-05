@@ -1,10 +1,10 @@
-{% extends "accounts/index.html" %}
+{% extends "cuentas/index.html" %}
 
 {% block title %}
 Instructores
 {% endblock %}
 
-{% block accounts_container %}
+{% block cuentas_container %}
 <h2>Instructores</h2>
 <table class="table table-bordered">
     <thead>
@@ -27,22 +27,22 @@ Instructores
         </tr>
     </thead>
     <tbody>
-        {% for Instructor in object_list %}
+        {% for instructor in object_list %}
         <tr>
             <td>
-                <a href=""># {{ Instructor.pk }}</a>
+                <a href=""># {{ instructor.pk }}</a>
             </td>
             <td>
-                {{ Instructor.nome }}
+                {{ instructor.nome }}
             </td>
             <td>
-                {{ Instructor.email }}
+                {{ instructor.email }}
             </td>
             <td>
-                {{ Instructor.TipoDeClase }}
+                {{ instructor.especialidade }}
             </td>
             <td>
-                {{ Instructor.telefone }}
+                {{ instructor.telefono }}
             </td>
         </tr>
         {% endfor %}

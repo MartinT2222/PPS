@@ -11,11 +11,11 @@ app_name = 'cuentas'
 # Definición de las URL
 urlpatterns = [
     path('', views.inicio, name='inicio'),  # Página de inicio
-    path('editar-datos/', views.actualizar_usuario, name='actualizar_usuario'),  # Actualizar datos de usuario
+    path('editar-datos/', views.update_user, name='update_user'),  # Actualizar datos de usuario
     path('cambiar-contrasena/', views.actualizar_contrasena, name='cambiar_contrasena'),  # Cambiar contraseña
     path('registro/', views.registro, name='registro'),  # Página de registro
-    path('iniciar-sesion/', views.iniciar_sesion, name='iniciar_sesion'),  # Página de inicio de sesión
-    path('cerrar-sesion/', views.cerrar_sesion, name='cerrar_sesion'),  # Página para cerrar sesión
+    path('entrar/', views.login, name='login'),  # Página de inicio de sesión
+    path('cerrar-sesion/', views.logout, name='logout'),  # Página para cerrar sesión
     path('recuperar-contrasena/',views.solicitud_reset_contrasena,name='solicitud_reset_contrasena'),# Página para solicitar restablecimiento de contraseña
     path('recuperar-contrasena-ok/',auth_views.PasswordResetDoneView.as_view(template_name='cuentas/contrasena/reset_contrasena_ok.html'),name='reset_contrasena_ok',),# Página de confirmación de solicitud de restablecimiento de contraseña
     path('recuperar-contrasena-completo/',auth_views.PasswordResetDoneView.as_view(template_name='cuentas/contrasena/reset_contrasena_completo.html'),name='reset_contrasena_completo', ),# Página de confirmación completa de restablecimiento de contraseña
