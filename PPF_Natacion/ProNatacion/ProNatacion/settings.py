@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'widget_tweaks',
+    'django_extensions',
     
     'cuentas',
     'instructores',
@@ -125,7 +126,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/conta/entrar/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_URL = '/logout/'
-AUTH_USER_MODEL = 'cuentas.Usuario'
+AUTH_USER_MODEL = 'cuentas.User'
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'cuentas.backends.ModelBackend'

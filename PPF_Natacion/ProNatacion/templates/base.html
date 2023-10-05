@@ -23,21 +23,25 @@
             </div>
             <div class="navbar-collapse collapse" id="navbar-main">
                 <ul class="nav navbar-nav">
-                    <li><a href="">Clases</a></li>
-                    <li><a href="">Reservas</a></li>
+                    <li><a href="{% url 'alumnos:consulta_create'%}">Clases</a></li>
                     {% if user.is_staff or user.is_superuser %}
-                        <li><a href="">Cuentas</a></li>
-                        <li><a href="">Alumnos</a></li>
-                        <li><a href="">Instructores</a></li>
+                    <li><a href="{% url 'instructores:agendar_consulta'%}">Reservas</a></li>
+                    <li><a href="{% url 'instructores:agendar_consulta'%}">Agendas</a></li>
+                      <li>
+                        <a href="{% url 'instructores:instructor_cadastro'%}">Instructor</a>
+                      </li>
+                      <li>
+                        <a href="{% url 'instructores:especialidade_cadastro'%}">Especialidade</a>
+                      </li>
                     {% endif %}
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'cuentas:inicio' %}">Mi cuenta</a></li>
-                        <li><a href="{% url 'cuentas:cerrar_sesion' %}">Salir</a></li>
+                        <li><a href="{% url 'cuentas:logout' %}">Salir</a></li>
                     {% else %}
-                        <li><a href="{% url 'cuentas:iniciar_sesion' %}">Entrar</a></li>
+                        <li><a href="{% url 'cuentas:login' %}">Entrar</a></li>
                         <li><a href="{% url 'cuentas:registro' %}">Registro</a></li>
                     {% endif %}
                 </ul>

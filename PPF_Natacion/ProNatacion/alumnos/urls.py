@@ -4,8 +4,10 @@ from . import views
 app_name = 'alumnos'
 
 urlpatterns = [
-    path('', views.lista_alumnos, name='lista_alumnos'),
-    path('alumno/<int:alumno_id>/', views.detalle_alumno, name='detalle_alumno'),
-    path('alumno/<int:alumno_id>/progresos/', views.lista_progresos_alumno, name='lista_progresos_alumno'),
-    path('progreso/<int:progreso_id>/', views.detalle_progreso, name='detalle_progreso'),
+    path('registro/', views.cliente_crear, name='cliente_cadastro'),
+    path('atualizar/', views.cliente_actualizar, name='cliente_atualizar'),
+    path('consultas/', views.consulta_lista, name='consulta_list'),
+    path('consultas/criar/', views.consulta_create, name='consulta_create'),
+    path('consultas/editar/<int:pk>/', views.consulta_actualizar, name='consulta_update'),
+    path('consultas/excluir/<int:pk>/', views.consulta_eliminar, name='consulta_delete'),
 ]
