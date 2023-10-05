@@ -17,7 +17,7 @@ class ProgresoAlumnoAdmin(admin.ModelAdmin):
 
 class ClientAdmin(admin.ModelAdmin):
     list_display = [
-        'telefono', 'sexo',
+        'telefono', 'sexo', 'fecha_nacimiento', 'direccion',
     ]
     
 class ConsultaAdmin(admin.ModelAdmin):

@@ -10,26 +10,26 @@ app_name = 'cuentas'
 
 # Definición de las URL
 urlpatterns = [
-    path('', views.inicio, name='inicio'),  # Página de inicio
+    path('', views.index, name='index'),  # Página de inicio
     path('editar-datos/', views.update_user, name='update_user'),  # Actualizar datos de usuario
-    path('cambiar-contrasena/', views.actualizar_contrasena, name='cambiar_contrasena'),  # Cambiar contraseña
+    path('cambiar-contrasena/', views.update_password, name='update_password'),  # Cambiar contraseña
     path('registro/', views.registro, name='registro'),  # Página de registro
     path('entrar/', views.login, name='login'),  # Página de inicio de sesión
     path('cerrar-sesion/', views.logout, name='logout'),  # Página para cerrar sesión
-    path('recuperar-contrasena/',views.solicitud_reset_contrasena,name='solicitud_reset_contrasena'),# Página para solicitar restablecimiento de contraseña
-    path('recuperar-contrasena-ok/',auth_views.PasswordResetDoneView.as_view(template_name='cuentas/contrasena/reset_contrasena_ok.html'),name='reset_contrasena_ok',),# Página de confirmación de solicitud de restablecimiento de contraseña
-    path('recuperar-contrasena-completo/',auth_views.PasswordResetDoneView.as_view(template_name='cuentas/contrasena/reset_contrasena_completo.html'),name='reset_contrasena_completo', ),# Página de confirmación completa de restablecimiento de contraseña
+    path('recuperar-contrasena/',views.solicitud_reset_contrasena,name='password_reset'),# Página para solicitar restablecimiento de contraseña
+    path('recuperar-contrasena-ok/',auth_views.PasswordResetDoneView.as_view(template_name='cuentas/password/password_reset_done.html'),name='password_reset_done',),# Página de confirmación de solicitud de restablecimiento de contraseña
+    path('recuperar-contrasena-completo/',auth_views.PasswordResetDoneView.as_view(template_name='cuentas/password/password_reset_complete.html'),name='password_reset_complete', ),# Página de confirmación completa de restablecimiento de contraseña
     path('recuperar-contrasena-confirmar/<uidb64>/<token>/',
         auth_views.PasswordResetConfirmView.as_view(
-            template_name='cuentas/contrasena/reset_contrasena_confirmar.html',
-            success_url=reverse_lazy("cuentas:reset_contrasena_completo")
+            template_name='cuentas/password/password_reset_confirm.html',
+            success_url=reverse_lazy("cuentas:password_reset_complete")
         ),
-        name='reset_contrasena_confirmar'  # Página para confirmar restablecimiento de contraseña
+        name='password_reset_confirm'  # Página para confirmar restablecimiento de contraseña
     ),
     path(
-        'recuperar-contrasena_confirmar',
+        'password_reset_confirm',
         views.solicitud_reset_contrasena,
-        name="solicitud_reset_contrasena"  # Página para solicitar restablecimiento de contraseña
+        name="password_reset"  # Página para solicitar restablecimiento de contraseña
     )
 ]
 

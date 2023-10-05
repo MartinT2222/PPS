@@ -42,10 +42,10 @@
                 {{ consulta.get_horario_display }}
             </td>
             <td>
-                <a href="{% url 'instructores:agenda_consulta_actualizar' consulta.pk %}" class="text-primary" style="padding-left: 10px; text-decoration: none;">
+                <a href="{% url 'instructores:agendar_consulta_atualizar' consulta.pk %}" class="text-primary" style="padding-left: 10px; text-decoration: none;">
                     <i class="fas fa-edit"></i>
                 </a>
-                <a href="{% url 'instructores:agenda_consulta_deletar' consulta.pk %}" class="mr-1 text-danger" style="padding-left: 10px; text-decoration: none;">
+                <a href="{% url 'instructores:agendar_consulta_deletar' consulta.pk %}" class="mr-1 text-danger" style="padding-left: 10px; text-decoration: none;">
                     <i class="fas fa-trash-alt"></i>
                 </a>
             </td>

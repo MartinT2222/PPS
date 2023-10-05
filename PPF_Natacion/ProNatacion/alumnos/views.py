@@ -11,7 +11,7 @@ class ClienteCrearView(LoginRequiredMixin, CreateView):
     
     model = Alumno
     template_name = 'alumnos/cadastro.html'
-    fields = ['sexo', 'telefono']
+    fields = ['sexo', 'telefono','fecha_nacimiento', 'direccion']
     success_url = reverse_lazy('index')
     
     def form_valid(self, form):
@@ -23,7 +23,7 @@ class ClienteActualizarView(LoginRequiredMixin, UpdateView):
     model = Alumno
     login_url = reverse_lazy('cuentas:login')
     template_name = 'cuentas/update_user.html'
-    fields = ['sexo', 'telefono']
+    fields = ['sexo', 'telefono', 'fecha_nacimiento', 'direccion']
     success_url = reverse_lazy('cuentas:index')
 
     def get_object(self):

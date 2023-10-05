@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from django.db.models.fields.related import ForeignKey
 
 class Especialidade(models.Model):
-    nombre = models.CharField(verbose_name="Nombre", max_length=200)
+    nombre = models.CharField(verbose_name="Nome", max_length=200)
     
     def __str__(self):
         return f'{self.nombre}'
