@@ -1,33 +1,33 @@
 {% extends "cuentas/index.html" %}
 
 {% block title %}
-Tipo De Clase
+    <!-- Título de la página -->
+    Tipo de Clase
 {% endblock %}
 
 {% block cuentas_container %}
-<h2>Tipo De Clase</h2>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>
-                ID
-            </th>
-            <th>
-                Nome
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for especialidade in object_list %}
-        <tr>
-            <td>
-                <a href=""># {{ especialidade.pk }}</a>
-            </td>
-            <td>
-                {{ especialidade.nome }}
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <!-- Contenido específico para esta página -->
+    <h2>Tipo de Clase</h2>
+    <!-- Tabla para mostrar los tipos de clase -->
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Iteración sobre los tipos de clase -->
+            {% for especialidade in object_list %}
+                <tr>
+                    <td>
+                        <a href=""># {{ especialidade.pk }}</a>
+                    </td>
+                    <td>
+                        {{ especialidade.nome }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

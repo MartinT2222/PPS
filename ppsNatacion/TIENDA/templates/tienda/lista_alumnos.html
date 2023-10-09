@@ -1,0 +1,38 @@
+{% extends 'tienda/layout.html' %}
+
+{% block body %}
+  <div class="container mt-4">
+    <h2>Lista de Alumnos</h2>
+
+    <form method="post">
+      {% csrf_token %}
+      
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Número de Socio</th>
+            <th>Nombre</th>
+            <th>Dirección</th>
+            <th>Teléfono</th>
+            <th>Sexo</th>
+            <th>Edad</th>
+            <!-- Agrega más columnas según los campos que desees mostrar -->
+          </tr>
+        </thead>
+        <tbody>
+          {% for alumno in alumnos %}
+            <tr>
+              <td>{{ alumno.alumno_id }}</td>
+              <td>{{ alumno.nombre }}</td>
+              <td>{{ alumno.direccion }}</td>
+              <td>{{ alumno.telefono }}</td>
+              <td>{{ alumno.get_sexo_display }}</td>
+              <td>{{ alumno.edad }}</td>
+              <!-- Agrega más columnas según los campos que desees mostrar -->
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </form>
+  </div>
+{% endblock body %}
