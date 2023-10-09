@@ -90,7 +90,7 @@ class ConsultaListaView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         User = self.request.user
         try:
-            alumno = Alumno.objects.get(User=User)
+            alumno = Alumno.objects.get(user=self.request.user)
         except Alumno.DoesNotExist:
             messages.warning(self.request, 'Crea una consulta')
             return None

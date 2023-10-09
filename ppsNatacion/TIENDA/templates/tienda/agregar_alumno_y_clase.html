@@ -1,0 +1,71 @@
+{% extends 'tienda/layout.html' %}
+
+{% block body %}
+  <a href="{% url 'tienda:home' %}" class="btn btn-primary">Volver al inicio</a>
+  <h2>Agregar Alumno y Clase de Natación</h2>
+  
+  
+  
+  <!-- Formulario para agregar un alumno -->
+  <form action="." method="POST" enctype="multipart/form-data" class="mt-4">
+    {% csrf_token %}
+    {{ alumno_form.as_p }}
+
+    
+    
+    <button type="submit" name="alumno_form" class="btn btn-primary">Agregar Alumno</button>
+  </form>
+<hr> <!-- Una línea divisoria entre los formularios -->
+  <!-- Resultados de Alumnos -->
+<h3>Resultados de Alumnos</h3>
+<table id="alumnos-table" class="display">
+  <thead>
+    <tr>
+      <!-- Agrega encabezados según los datos que mostrarás -->
+      <th>Nombre</th>
+      <th>Dirección</th>
+      <!-- ...otros campos... -->
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Aquí se llenarán los datos de los alumnos -->
+  </tbody>
+</table>
+  <hr> <!-- Una línea divisoria entre los formularios -->
+
+
+  <form action="." method="POST" enctype="multipart/form-data" class="mt-4">
+    {% csrf_token %}
+    {{ clase_natacion_form.as_p }}
+
+    <!-- Campo de selección para elegir el alumno -->
+    <div class="mb-3">
+        <label for="alumno" class="form-label">Seleccione un alumno:</label>
+        <select name="alumno" id="alumno" class="form-select">
+          {% for alumno in alumnos %}
+            <option value="{{ alumno.id }}">{{ alumno.nombre }}</option>
+          {% endfor %}
+        </select>
+    </div>
+   
+    
+
+
+    <button type="submit" name="clase_natacion_form" class="btn btn-primary">Agregar Clase de Natación</button>
+  </form>
+
+  <h3>Resultados de Clases de Natación</h3>
+<table id="clases-natacion-table" class="display">
+  <thead>
+    <tr>
+      <!-- Agrega encabezados según los datos que mostrarás -->
+      <th>Especialidad</th>
+      <th>Nombre del Docente</th>
+      <!-- ...otros campos... -->
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Aquí se llenarán los datos de las clases de natación -->
+  </tbody>
+</table>
+{% endblock body %}
