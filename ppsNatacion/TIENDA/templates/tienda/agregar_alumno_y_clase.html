@@ -1,11 +1,11 @@
 {% extends 'tienda/layout.html' %}
 
 {% block body %}
-  <a href="{% url 'tienda:home' %}" class="btn btn-primary">Volver al inicio</a>
-  <h2>Agregar Alumno y Clase de Natación</h2>
+<a href="{% url 'tienda:home' %}" class="btn btn-primary">Volver al inicio</a>
+<h2>Agregar Alumno y Clase de Natación</h2>
   
   
-  
+<div class="col-md-4">
   <!-- Formulario para agregar un alumno -->
   <form action="." method="POST" enctype="multipart/form-data" class="mt-4">
     {% csrf_token %}
@@ -15,6 +15,7 @@
     
     <button type="submit" name="alumno_form" class="btn btn-primary">Agregar Alumno</button>
   </form>
+</div>
 <hr> <!-- Una línea divisoria entre los formularios -->
   <!-- Resultados de Alumnos -->
 <h3>Resultados de Alumnos</h3>
@@ -33,7 +34,7 @@
 </table>
   <hr> <!-- Una línea divisoria entre los formularios -->
 
-
+<div class="col-md-4">
   <form action="." method="POST" enctype="multipart/form-data" class="mt-4">
     {% csrf_token %}
     {{ clase_natacion_form.as_p }}
@@ -47,13 +48,13 @@
           {% endfor %}
         </select>
     </div>
-   
+
     
 
 
     <button type="submit" name="clase_natacion_form" class="btn btn-primary">Agregar Clase de Natación</button>
   </form>
-
+</div>
   <h3>Resultados de Clases de Natación</h3>
 <table id="clases-natacion-table" class="display">
   <thead>
@@ -68,4 +69,12 @@
     <!-- Aquí se llenarán los datos de las clases de natación -->
   </tbody>
 </table>
+
+
+<script>
+    $(document).ready(function() {
+        $('#alumnos-table').DataTable();
+        $('#clases-natacion-table').DataTable();
+    });
+</script>
 {% endblock body %}
