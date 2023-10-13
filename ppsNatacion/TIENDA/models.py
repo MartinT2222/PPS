@@ -14,7 +14,7 @@ class ClaseNatacion(models.Model):
         return self.especialidad
 
 class Alumno(models.Model):
-    alumno_id = models.IntegerField(unique=True)  # Número de socio como ID
+    alumno_id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
     direccion = models.CharField(max_length=255)
     telefono = models.CharField(max_length=15)
@@ -31,3 +31,5 @@ class Alumno(models.Model):
 
     def __str__(self):
         return self.nombre
+    
+    

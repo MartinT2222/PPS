@@ -14,7 +14,7 @@
         <img src=" {{ media_url  }}{{ p.imagen.url }}" class="card-img-top" alt="...">
         <p class="card-text">
 
-            {{p.descripcion |slice:"0:50"}}<a href="{% url 'tienda:producto' p.id %}  " > ...Continuar leyendo</a>
+            {{p.descripcion |slice:"0:50"}}<a href="{% url 'tienda:alumno_id ' a_id.id %}  " > ...Continuar leyendo</a>
             <hr>
             ${{p.precio}}
         </p>
