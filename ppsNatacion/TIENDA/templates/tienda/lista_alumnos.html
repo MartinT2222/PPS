@@ -1,38 +1,69 @@
 {% extends 'tienda/layout.html' %}
 
-{% block body %}
-  <div class="container mt-4">
-    <h2>Lista de Alumnos</h2>
+{% load static %}
 
-    <form method="post">
-      {% csrf_token %}
-      
-      <table class="table table-striped">
+{% block body %}
+  <a href="{% url 'tienda:home' %}" class="btn btn-primary">Volver al inicio</a>
+  <h2>Lista de Alumnos</h2>
+
+  <div class="row">
+    <div class="col-md-12">
+      <table id="alumnos-table" class="display">
+        <!-- Encabezados de la tabla -->
         <thead>
           <tr>
-            <th>Número de Socio</th>
-            <th>Nombre</th>
-            <th>Dirección</th>
-            <th>Teléfono</th>
-            <th>Sexo</th>
-            <th>Edad</th>
-            <!-- Agrega más columnas según los campos que desees mostrar -->
+            <!-- ... Encabezados existentes ... -->
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
           {% for alumno in alumnos %}
             <tr>
+              <!-- Celdas de datos del alumno -->
               <td>{{ alumno.alumno_id }}</td>
               <td>{{ alumno.nombre }}</td>
               <td>{{ alumno.direccion }}</td>
               <td>{{ alumno.telefono }}</td>
               <td>{{ alumno.get_sexo_display }}</td>
               <td>{{ alumno.edad }}</td>
-              <!-- Agrega más columnas según los campos que desees mostrar -->
+              <!-- Celda con el botón de eliminar -->
+              <td>
+                <button onclick="eliminarAlumno({{ alumno.alumno_id }})">Eliminar</button>
+              </td>
             </tr>
           {% endfor %}
         </tbody>
       </table>
-    </form>
+    </div>
   </div>
+
+  
+  <script>
+    $(document).ready(function() {
+      $('#alumnos-table').DataTable();
+    });
+
+    function eliminarAlumno(alumno_id) {
+      console.log('Eliminar alumno con ID:', alumno_id);
+      if (confirm("¿Estás seguro que deseas eliminar este alumno?")) {
+        // Envía una solicitud AJAX para eliminar el alumno
+        $.ajax({
+          url: `/alumnos/eliminar/${alumno_id}/`,  // Ajusta la ruta según tu configuración
+          method: 'POST',
+          data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+          },
+          success: function(response) {
+            console.log('Alumno eliminado correctamente.');
+            // Actualiza la página para reflejar el cambio
+            location.reload();
+          },
+          error: function(error) {
+            console.error('Error al eliminar el alumno:', error);
+          }
+        });
+      }
+    }
+  </script>
+
 {% endblock body %}

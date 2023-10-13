@@ -1,0 +1,86 @@
+{% extends 'tienda/layout.html' %}
+
+{% block body %}
+  <a href="{% url 'tienda:home' %}" class="btn btn-primary">Volver al inicio</a>
+  <h2>Agregar Alumno</h2>
+
+  <div class="row">
+    <div class="col-md-4">
+      <!-- Formulario para agregar un alumno -->
+      <form action="." method="POST" enctype="multipart/form-data" class="mt-2">
+        {% csrf_token %}
+        {{ alumno_form.as_p }}
+
+        <button type="submit" name="alumno_form" class="btn btn-primary">Agregar Alumno</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Contenedor para mostrar la tabla de datos del alumno -->
+  <div id="alumno-data" style="display: none;">
+    <div class="row">
+      <div class="col-md-12">
+        <h3>Datos del Alumno Registrado</h3>
+        <table id="alumno-table" class="display">
+          <thead>
+            <tr>
+              <!-- Encabezados de la tabla -->
+              <th>Nombre</th>
+              <th>Dirección</th>
+              <th>Teléfono</th>
+              <th>sexo</th>
+              <th>edad</th>
+              <th>email</th>
+              <th>fecha inscripcion</th>
+              <th>telefono emergencia</th>
+              <th>mensualidad</th>
+              <th>membresia vip</th>
+              <th>alergias</th>
+              <th>docente a cargo</th>
+              <th>clase natacion</th>
+              <!-- Agrega más encabezados según los datos que mostrarás -->
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Aquí se llenarán los datos del alumno -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+        $('#alumnos-table').DataTable();
+
+        function mostrarDatosAlumno(datos_alumno) {
+            $('#alumno-data').show();
+            // Llenar la tabla con los datos del alumno
+            var table = $('#alumno-table').DataTable();
+            table.clear().draw();
+            table.row.add([
+                datos_alumno.nombre,
+                datos_alumno.direccion,
+                datos_alumno.Teléfono
+                datos_alumno.sexo
+                datos_alumno.edad
+                datos_alumno.email
+                datos_alumno.fecha_inscripcion
+                datos_alumno.telefono_emergencia
+                datos_alumno.mensualidad
+                datos_alumno.membresia_vip
+                datos_alumno.alergias
+                datos_alumno.docente_a_cargo
+                datos_alumno.clase_natacion
+                // Agrega más celdas según los datos que quieras mostrar
+            ]).draw();
+        }
+
+        // Llamada a la función para mostrar los datos del alumno
+        // Esta llamada debería realizarse cuando se ha registrado un alumno exitosamente
+        mostrarDatosAlumno({{ datos_alumno|safe }});
+    });
+  </script>
+
+{% endblock body %}
+

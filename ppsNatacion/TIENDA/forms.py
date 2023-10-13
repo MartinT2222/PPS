@@ -13,7 +13,7 @@ class ClaseNatacionForm(forms.ModelForm):
 class AlumnoForm(forms.ModelForm):
     class Meta:
         model = Alumno
-        fields = ['alumno_id', 'nombre', 'direccion', 'telefono', 'sexo', 'edad', 'email', 
+        fields = [ 'nombre', 'direccion', 'telefono', 'sexo', 'edad', 'email', 
                   'fecha_inscripcion', 'telefono_emergencia', 'mensualidad', 'membresia_vip', 
                   'alergias', 'docente_a_cargo', 'clase_natacion']
         widgets = {
