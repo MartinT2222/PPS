@@ -105,8 +105,21 @@ def agregar_alumno(request):
                 alumno = alumno_form.save()
                 # Obtener los datos del alumno
                 datos_alumno = {
+                    'alumno_id': alumno.alumno_id,
                     'nombre': alumno.nombre,
                     'direccion': alumno.direccion,
+                    'telefono': alumno.telefono,
+                    'sexo': alumno.get_sexo_display(),
+                    'edad': alumno.edad,
+                    'email': alumno.email,
+                    'fecha_inscripcion': alumno.fecha_inscripcion.strftime('%Y-%m-%d'),  # Formatear a 'YYYY-MM-DD'
+                    'telefono_emergencia': alumno.telefono_emergencia,
+                    'mensualidad': str(alumno.mensualidad),  # Convertir a cadena para mostrar
+                    'membresia_vip': 'Sí' if alumno.membresia_vip else 'No',  # Convertir a 'Sí' o 'No'
+                    'alergias': alumno.alergias,
+                    'docente_a_cargo': alumno.docente_a_cargo,
+                    'clase_natacion': alumno.clase_natacion.especialidad if alumno.clase_natacion else ''
+
                     # Agrega más datos según los que quieras mostrar
                 }
                 return render(request, 'tienda/agregar_alumno.html', {'alumno_form': alumno_form, 'datos_alumno': datos_alumno})

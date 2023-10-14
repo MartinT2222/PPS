@@ -1,4 +1,5 @@
 {% extends 'tienda/layout.html' %}
+{% load static %}
 
 {% block body %}
   <a href="{% url 'tienda:home' %}" class="btn btn-primary">Volver al inicio</a>
@@ -25,6 +26,7 @@
           <thead>
             <tr>
               <!-- Encabezados de la tabla -->
+              <th>alumno id</th>
               <th>Nombre</th>
               <th>Dirección</th>
               <th>Teléfono</th>
@@ -42,7 +44,23 @@
             </tr>
           </thead>
           <tbody>
-            <!-- Aquí se llenarán los datos del alumno -->
+            <tr>
+              <td id="alumno-id"></td>
+              <td id="alumno-nombre"></td>
+              <td id="alumno-direccion"></td>
+              <td id="alumno-telefono"></td>
+              <td id="alumno-sexo"></td>
+              <td id="alumno-edad"></td>
+              <td id="alumno-email"></td>
+              <td id="alumno-fecha-inscripcion"></td>
+              <td id="alumno-telefono-emergencia"></td>
+              <td id="alumno-mensualidad"></td>
+              <td id="alumno-membresia-vip"></td>
+              <td id="alumno-alergias"></td>
+              <td id="alumno-docente-a-cargo"></td>
+              <td id="alumno-clase-natacion"></td>
+              <!-- Agrega más celdas según los datos que quieras mostrar -->
+            </tr>
           </tbody>
         </table>
       </div>
@@ -51,36 +69,39 @@
 
   <script>
     $(document).ready(function() {
-        $('#alumnos-table').DataTable();
-
-        function mostrarDatosAlumno(datos_alumno) {
-            $('#alumno-data').show();
-            // Llenar la tabla con los datos del alumno
-            var table = $('#alumno-table').DataTable();
-            table.clear().draw();
-            table.row.add([
-                datos_alumno.nombre,
-                datos_alumno.direccion,
-                datos_alumno.Teléfono
-                datos_alumno.sexo
-                datos_alumno.edad
-                datos_alumno.email
-                datos_alumno.fecha_inscripcion
-                datos_alumno.telefono_emergencia
-                datos_alumno.mensualidad
-                datos_alumno.membresia_vip
-                datos_alumno.alergias
-                datos_alumno.docente_a_cargo
-                datos_alumno.clase_natacion
-                // Agrega más celdas según los datos que quieras mostrar
-            ]).draw();
-        }
-
-        // Llamada a la función para mostrar los datos del alumno
-        // Esta llamada debería realizarse cuando se ha registrado un alumno exitosamente
-        mostrarDatosAlumno({{ datos_alumno|safe }});
+      console.log('Script: Inicio del documento listo.');
+    
+      $('#alumno-table').DataTable();
+    
+      function mostrarDatosAlumno(datos_alumno) {
+        console.log('Script: Mostrar datos del alumno:', datos_alumno);
+    
+        $('#alumno-data').show();
+        var tbody = $('#alumno-table tbody');
+        tbody.empty();  // Limpiar el cuerpo de la tabla antes de agregar datos
+        
+        var row = $('<tr>');  // Crear una fila
+        row.append($('<td>').text(datos_alumno.alumno_id));
+        row.append($('<td>').text(datos_alumno.nombre));
+        row.append($('<td>').text(datos_alumno.direccion));
+        row.append($('<td>').text(datos_alumno.telefono));
+        row.append($('<td>').text(datos_alumno.sexo));
+        row.append($('<td>').text(datos_alumno.edad));
+        row.append($('<td>').text(datos_alumno.email));
+        row.append($('<td>').text(datos_alumno.fecha_inscripcion));
+        row.append($('<td>').text(datos_alumno.telefono_emergencia));
+        row.append($('<td>').text(datos_alumno.mensualidad));
+        row.append($('<td>').text(datos_alumno.membresia_vip));
+        row.append($('<td>').text(datos_alumno.alergias));
+        row.append($('<td>').text(datos_alumno.docente_a_cargo));
+        row.append($('<td>').text(datos_alumno.clase_natacion));
+        tbody.append(row);  // Agregar la fila al cuerpo de la tabla
+      }
+    
+      // Llamada a la función para mostrar los datos del alumno
+      // Esta llamada debería realizarse cuando se ha registrado un alumno exitosamente
+      mostrarDatosAlumno({{ datos_alumno|safe }});
     });
   </script>
-
+  
 {% endblock body %}
-
