@@ -8,12 +8,18 @@
 
   <div class="row">
     <div class="col-md-12">
-      <table id="alumnos-table" class="display">
+      <table id="alumnos-table" class="table table-bordered table-dark">
         <!-- Encabezados de la tabla -->
         <thead>
           <tr>
             <!-- ... Encabezados existentes ... -->
-            <th>Acciones</th>
+            <th>Alumno</th>
+            <th>Nombre</th>
+            <th>Dirección</th>
+            <th>Teléfono</th>
+            <th>Sexo</th>
+            <th>Edad</th>
+            <th>Eliminar</th>
           </tr>
         </thead>
         <tbody>
@@ -28,7 +34,7 @@
               <td>{{ alumno.edad }}</td>
               <!-- Celda con el botón de eliminar -->
               <td>
-                <button onclick="eliminarAlumno({{ alumno.alumno_id }})">Eliminar</button>
+                <button class="btn btn-danger" onclick="eliminarAlumno({{ alumno.alumno_id }})">Eliminar</button>
               </td>
             </tr>
           {% endfor %}
