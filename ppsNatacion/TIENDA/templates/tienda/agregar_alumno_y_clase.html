@@ -100,3 +100,27 @@
     });
   </script>
 {% endblock body %}
+
+
+<script>
+  $(document).ready(function() {
+    // Inicializa las tablas DataTable
+    var alumnosTable = $('#alumnos-table').DataTable();
+    var clasesNatacionTable = $('#clases-natacion-table').DataTable();
+
+    // Agrega un evento de cambio al select de docente
+    $('#docente-filter').on('change', function() {
+      var selectedDocente = $(this).val();
+
+      // Filtra la tabla de alumnos por docente
+      if (alumnosTable.column('12:name').search() !== selectedDocente) {
+        alumnosTable.column('12:name').search(selectedDocente).draw();
+      }
+
+      // Filtra la tabla de clases de natación por docente
+      if (clasesNatacionTable.column('1:name').search() !== selectedDocente) {
+        clasesNatacionTable.column('1:name').search(selectedDocente).draw();
+      }
+    });
+  });
+</script>

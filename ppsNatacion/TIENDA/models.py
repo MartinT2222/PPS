@@ -1,4 +1,7 @@
 from django.db import models
+from datetime import datetime, timedelta
+from django.utils import timezone
+import os
 
 class ClaseNatacion(models.Model):
     clase_id = models.IntegerField(unique=True)
@@ -10,7 +13,7 @@ class ClaseNatacion(models.Model):
     fecha_clase = models.DateField()  # Fecha en que se dicta la clase
     horas_clase = models.TimeField()  # Horas en que se dicta la clase
 
-    def __str__(self):
+    def _str_(self):
         return self.especialidad
 
 class Alumno(models.Model):
@@ -28,8 +31,25 @@ class Alumno(models.Model):
     alergias = models.TextField(blank=True, null=True)
     docente_a_cargo = models.CharField(max_length=100, blank=True, null=True)
     clase_natacion = models.ForeignKey(ClaseNatacion, on_delete=models.CASCADE)
+    pago = models.BooleanField(default=False)
+    
+    def enviar_recordatorio_cuota_whatsapp(self):
+        # Calcular la fecha límite para la renovación de la cuota (30 días después de la fecha de inscripción)
+        fecha_actual = timezone.now()
+        fecha_limite_renovacion = self.fecha_inscripcion + timedelta(days=30)
 
-    def __str__(self):
+        # Verificar si la fecha actual está dentro del período de recordatorio
+        if self.fecha_inscripcion <= fecha_actual <= fecha_limite_renovacion and not self.pago:
+            mensaje = f'Hola {self.nombre}, tu cuota vence pronto y aún no has realizado el pago. Recuerda renovarla a tiempo.'
+
+            # Sustituye '1234567890' con el número de teléfono del alumno en formato internacional
+            numero_whatsapp = f'54{self.telefono}'
+
+            # Comando para enviar el mensaje a través de yowsup-cli
+            comando = f'yowsup-cli demos --send {numero_whatsapp} "{mensaje}"'
+
+            # Ejecuta el comando
+            os.system(comando)
+            
+    def _str_(self):
         return self.nombre
-    
-    

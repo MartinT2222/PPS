@@ -19,6 +19,7 @@
             <th>Teléfono</th>
             <th>Sexo</th>
             <th>Edad</th>
+            <th>Precio</th>
             <th>Eliminar</th>
           </tr>
         </thead>
@@ -32,6 +33,7 @@
               <td>{{ alumno.telefono }}</td>
               <td>{{ alumno.get_sexo_display }}</td>
               <td>{{ alumno.edad }}</td>
+              <td>{{ alumno.pago }}</td>
               <!-- Celda con el botón de eliminar -->
               <td>
                 <button class="btn btn-danger" onclick="eliminarAlumno({{ alumno.alumno_id }})">Eliminar</button>
@@ -45,9 +47,29 @@
 
   
   <script>
+    
     $(document).ready(function() {
-      $('#alumnos-table').DataTable();
-    });
+  $('#alumnos-table').DataTable({
+    language: {
+      search: 'Buscar:',
+      show: 'Mostrar MAX alumnos',
+      entries: 'Mostrar alumnos por página',
+      info: 'Mostrando START a END de TOTAL alumnos',
+      infoEmpty: 'Mostrando 0 a 0 de 0 alumnos',
+      infoFiltered: '(filtrado de un total de MAX alumnos)',
+      paginate: {
+        first: '<a class="first-page-btn">Primero</a>',
+        last: '<a class="last-page-btn">Último</a>',
+        next: '<a class="next-page-btn btn btn-primary">Siguiente</a>',
+        previous: '<a class="prev-page-btn btn btn-primary">Anterior</a>'
+      }
+    },
+    dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
+         '<"row"<"col-sm-12"tr>>' +
+         '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+  });
+});
+
 
     function eliminarAlumno(alumno_id) {
       console.log('Eliminar alumno con ID:', alumno_id);

@@ -15,7 +15,8 @@ class AlumnoForm(forms.ModelForm):
         model = Alumno
         fields = [ 'nombre', 'direccion', 'telefono', 'sexo', 'edad', 'email', 
                   'fecha_inscripcion', 'telefono_emergencia', 'mensualidad', 'membresia_vip', 
-                  'alergias', 'docente_a_cargo', 'clase_natacion']
+                  'alergias', 'docente_a_cargo', 'pago','clase_natacion']
         widgets = {
             'fecha_inscripcion': forms.DateInput(attrs={'type': 'date'}),
+            'pago': forms.CheckboxInput(),
         }
