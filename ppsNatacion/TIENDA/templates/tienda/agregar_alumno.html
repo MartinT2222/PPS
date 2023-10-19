@@ -2,67 +2,91 @@
 {% load static %}
 
 {% block body %}
-  <a href="{% url 'tienda:home' %}" class="btn btn-primary">Volver al inicio</a>
+<a href="{% url 'tienda:home' %}" class="btn btn-primary">Volver al inicio</a>
   <h2>Agregar Alumno</h2>
 
   <div class="row">
-    <div class="col-md-4">
-      <!-- Formulario para agregar un alumno -->
+    <!-- Columna izquierda para el formulario de agregar alumno -->
+    <div class="col-md-6">
       <form action="." method="POST" enctype="multipart/form-data" class="mt-2">
         {% csrf_token %}
         {{ alumno_form.as_p }}
-
         <button type="submit" name="alumno_form" class="btn btn-primary">Agregar Alumno</button>
       </form>
     </div>
-  </div>
 
-  <!-- Contenedor para mostrar la tabla de datos del alumno -->
-  <div id="alumno-data" style="display: none;">
-    <div class="row">
-      <div class="col-md-12">
+    <!-- Columna derecha para mostrar datos del alumno registrado -->
+    <div class="col-md-6" >
+      <div id="alumno-data" style="display: none;">
         <h3>Datos del Alumno Registrado</h3>
-        <table id="alumno-table" class="display">
+        <table id="alumno-table" class="table table-bordered">
+          <!-- Encabezados de la tabla en forma vertical -->
           <thead>
             <tr>
-              <!-- Encabezados de la tabla -->
-              <th>alumno id</th>
-              <th>Nombre</th>
-              <th>Dirección</th>
-              <th>Teléfono</th>
-              <th>sexo</th>
-              <th>edad</th>
-              <th>email</th>
-              <th>fecha inscripcion</th>
-              <th>telefono emergencia</th>
-              <th>mensualidad</th>
-              <th>membresia vip</th>
-              <th>alergias</th>
-              <th>docente a cargo</th>
-              <th>clase natacion</th>
-              <!-- Agrega más encabezados según los datos que mostrarás -->
+              <th>Alumno ID:</th>
+              <td id="alumno-id"></td>
             </tr>
+            <tr>
+              <th>Nombre:</th>
+              <td id="alumno-nombre"></td>
+            </tr>
+            <tr>
+              <th>Dirección:</th>
+              <td id="alumno-direccion"></td>
+            </tr>
+            <tr>
+              <th>Teléfono:</th>
+              <td id="alumno-telefono"></td>
+            </tr>
+            <tr>
+              <th>Sexo:</th>
+              <td id="alumno-sexo"></td>
+            </tr>
+            <tr>
+              <th>Edad:</th>
+              <td id="alumno-edad"></td>
+            </tr>
+            <tr>
+              <th>Email:</th>
+              <td id="alumno-email"></td>
+            </tr>
+            <tr>
+              <th>Fecha de Inscripción:</th>
+              <td id="alumno-fecha-inscripcion"></td>
+            </tr>
+            <tr>
+              <th>Teléfono de Emergencia:</th>
+              <td id="alumno-telefono-emergencia"></td>
+            </tr>
+            <tr>
+              <th>Mensualidad:</th>
+              <td id="alumno-mensualidad"></td>
+            </tr>
+            <tr>
+              <th>Membresía VIP:</th>
+              <td id="alumno-membresia-vip"></td>
+            </tr>
+            <tr>
+              <th>Alergias:</th>
+              <td id="alumno-alergias"></td>
+            </tr>
+            <tr>
+              <th>Docente a Cargo:</th>
+              <td id="alumno-docente-a-cargo"></td>
+            </tr>
+            <tr>
+              <th>Clase de Natación:</th>
+              <td id="alumno-clase-natacion"></td>
+            </tr>
+            <!-- Agrega más filas según los datos que quieras mostrar -->
           </thead>
           <tbody>
-            <tr>
-              <td id="alumno-id"></td>
-              <td id="alumno-nombre"></td>
-              <td id="alumno-direccion"></td>
-              <td id="alumno-telefono"></td>
-              <td id="alumno-sexo"></td>
-              <td id="alumno-edad"></td>
-              <td id="alumno-email"></td>
-              <td id="alumno-fecha-inscripcion"></td>
-              <td id="alumno-telefono-emergencia"></td>
-              <td id="alumno-mensualidad"></td>
-              <td id="alumno-membresia-vip"></td>
-              <td id="alumno-alergias"></td>
-              <td id="alumno-docente-a-cargo"></td>
-              <td id="alumno-clase-natacion"></td>
-              <!-- Agrega más celdas según los datos que quieras mostrar -->
-            </tr>
+            <!-- Deja este espacio en blanco, lo llenaremos con JavaScript -->
           </tbody>
         </table>
+        <div id="success-message" class="alert alert-success mt-4" style="display: none;">
+          El alumno fue creado con éxito.
+        </div>
       </div>
     </div>
   </div>
@@ -70,38 +94,94 @@
   <script>
     $(document).ready(function() {
       console.log('Script: Inicio del documento listo.');
-    
+
       $('#alumno-table').DataTable();
-    
+
       function mostrarDatosAlumno(datos_alumno) {
         console.log('Script: Mostrar datos del alumno:', datos_alumno);
-    
+
         $('#alumno-data').show();
         var tbody = $('#alumno-table tbody');
         tbody.empty();  // Limpiar el cuerpo de la tabla antes de agregar datos
-        
+
         var row = $('<tr>');  // Crear una fila
+        row.append($('<td>').text('Alumno ID:'));
         row.append($('<td>').text(datos_alumno.alumno_id));
+        tbody.append(row);  // Agregar la fila al cuerpo de la tabla
+
+        row = $('<tr>');  // Crear una fila
+        row.append($('<td>').text('Nombre:'));
         row.append($('<td>').text(datos_alumno.nombre));
+        tbody.append(row);  // Agregar la fila al cuerpo de la tabla
+
+        row = $('<tr>');  // Crear una fila
+        row.append($('<td>').text('Dirección:'));
         row.append($('<td>').text(datos_alumno.direccion));
+        tbody.append(row);  // Agregar la fila al cuerpo de la tabla
+
+        row = $('<tr>');  // Crear una fila
+        row.append($('<td>').text('Teléfono:'));
         row.append($('<td>').text(datos_alumno.telefono));
+        tbody.append(row);  // Agregar la fila al cuerpo de la tabla
+
+        row = $('<tr>');  // Crear una fila
+        row.append($('<td>').text('Sexo:'));
         row.append($('<td>').text(datos_alumno.sexo));
+        tbody.append(row);  // Agregar la fila al cuerpo de la tabla
+
+        row = $('<tr>');  // Crear una fila
+        row.append($('<td>').text('Edad:'));
         row.append($('<td>').text(datos_alumno.edad));
+        tbody.append(row);  // Agregar la fila al cuerpo de la tabla
+
+        row = $('<tr>');  // Crear una fila
+        row.append($('<td>').text('Email:'));
         row.append($('<td>').text(datos_alumno.email));
+        tbody.append(row);  // Agregar la fila al cuerpo de la tabla
+
+        row = $('<tr>');  // Crear una fila
+        row.append($('<td>').text('Fecha de Inscripción:'));
         row.append($('<td>').text(datos_alumno.fecha_inscripcion));
+        tbody.append(row);  // Agregar la fila al cuerpo de la tabla
+
+        row = $('<tr>');  // Crear una fila
+        row.append($('<td>').text('Teléfono de Emergencia:'));
         row.append($('<td>').text(datos_alumno.telefono_emergencia));
+        tbody.append(row);  // Agregar la fila al cuerpo de la tabla
+
+        row = $('<tr>');  // Crear una fila
+        row.append($('<td>').text('Mensualidad:'));
         row.append($('<td>').text(datos_alumno.mensualidad));
+        tbody.append(row);  // Agregar la fila al cuerpo de la tabla
+
+        row = $('<tr>');  // Crear una fila
+        row.append($('<td>').text('Membresía VIP:'));
         row.append($('<td>').text(datos_alumno.membresia_vip));
+        tbody.append(row);  // Agregar la fila al cuerpo de la tabla
+
+        row = $('<tr>');  // Crear una fila
+        row.append($('<td>').text('Alergias:'));
         row.append($('<td>').text(datos_alumno.alergias));
+        tbody.append(row);  // Agregar la fila al cuerpo de la tabla
+
+        row = $('<tr>');  // Crear una fila
+        row.append($('<td>').text('Docente a Cargo:'));
         row.append($('<td>').text(datos_alumno.docente_a_cargo));
+        tbody.append(row);  // Agregar la fila al cuerpo de la tabla
+
+        row = $('<tr>');  // Crear una fila
+        row.append($('<td>').text('Clase de Natación:'));
         row.append($('<td>').text(datos_alumno.clase_natacion));
         tbody.append(row);  // Agregar la fila al cuerpo de la tabla
+
+        // Mostrar el mensaje de éxito
+        $('#success-message').show();
       }
-    
+
       // Llamada a la función para mostrar los datos del alumno
       // Esta llamada debería realizarse cuando se ha registrado un alumno exitosamente
       mostrarDatosAlumno({{ datos_alumno|safe }});
     });
   </script>
-  
+
 {% endblock body %}
