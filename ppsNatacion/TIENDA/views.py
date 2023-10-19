@@ -146,7 +146,23 @@ def agregar_clase(request):
     return render(request, 'tienda/agregar_clase.html', {'clase_natacion_form': clase_natacion_form})
 
 
+def crear_actualizar_alumno(request, alumno_id=None):
+    # ... lógica para crear o actualizar un alumno ...
 
+    # Obtener el alumno según el ID proporcionado
+    alumno = get_object_or_404(Alumno, id=alumno_id)
+
+    # Después de crear o actualizar el alumno, enviar el recordatorio de cuota
+    alumno.enviar_recordatorio_cuota_whatsapp()
+
+    # Verificar si el pago está marcado como pagado
+    if alumno.pago:
+        # Actualizar la fecha de inscripción si el pago está marcado como pagado
+        alumno.fecha_inscripcion = timezone.now().date()
+        alumno.save()
+    
+    # Resto del código para renderizar la página
+    return render(request, 'tienda/lista_alumnos.html', {'alumnos': [alumno]})
 
 
 
