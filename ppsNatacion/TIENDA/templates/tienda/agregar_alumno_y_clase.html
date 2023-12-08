@@ -9,7 +9,7 @@
     <div class="col-md-6">
       <!-- Formulario para agregar un alumno -->
       <form action="." method="POST" enctype="multipart/form-data" class="mt-4">
-        {% csrf_token %}
+        
         {{ alumno_form.as_p }}
 
         <button type="submit" name="alumno_form" class="btn btn-primary">Agregar Alumno</button>

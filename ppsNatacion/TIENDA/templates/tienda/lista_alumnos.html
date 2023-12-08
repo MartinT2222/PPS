@@ -1,42 +1,61 @@
 {% extends 'tienda/layout.html' %}
-
 {% load static %}
 
 {% block body %}
   <a href="{% url 'tienda:home' %}" class="btn btn-primary">Volver al inicio</a>
   <h2>Lista de Alumnos</h2>
-
+  {% csrf_token %}
   <div class="row">
     <div class="col-md-12">
       <table id="alumnos-table" class="table table-bordered table-dark">
-        <!-- Encabezados de la tabla -->
         <thead>
           <tr>
-            <!-- ... Encabezados existentes ... -->
-            <th>Alumno</th>
-            <th>Nombre</th>
-            <th>Dirección</th>
-            <th>Teléfono</th>
-            <th>Sexo</th>
-            <th>Edad</th>
-            <th>Precio</th>
-            <th>Eliminar</th>
+            <th class="table-warning" scope='col'>Alumno</th>
+            <th class="table-warning" scope='col'>Nombre</th>
+            <th class="table-warning" scope='col'>Dirección</th>
+            <th class="table-warning" scope='col'>Teléfono</th>
+            <th class="table-warning" scope='col'>Sexo</th>
+            <th class="table-warning" scope='col'>Edad</th>
+            <th class="table-warning" scope='col'>Precio</th>
+            <th class="table-warning" scope='col'>Editar</th>
+            <th class="table-warning" scope='col'>Eliminar</th>
           </tr>
         </thead>
         <tbody>
           {% for alumno in alumnos %}
-            <tr>
-              <!-- Celdas de datos del alumno -->
-              <td>{{ alumno.alumno_id }}</td>
-              <td>{{ alumno.nombre }}</td>
-              <td>{{ alumno.direccion }}</td>
-              <td>{{ alumno.telefono }}</td>
-              <td>{{ alumno.get_sexo_display }}</td>
-              <td>{{ alumno.edad }}</td>
-              <td>{{ alumno.pago }}</td>
-              <!-- Celda con el botón de eliminar -->
+            <tr class="table-warning">
+              <td class="table-warning">{{ alumno.alumno_id }}</td>
+              <td class="table-warning">{{ alumno.nombre }}</td>
+              <td class="table-warning">{{ alumno.direccion }}</td>
+              <td class="table-warning">{{ alumno.telefono }}</td>
+              <td class="table-warning">{{ alumno.get_sexo_display }}</td>
+              <td class="table-warning">{{ alumno.edad }}</td>
+              <td class="table-warning">{{ alumno.pago }}</td>
+              <td class="table-warning">
+                <form method="post" action="{% url 'tienda:edit_alumno' alumno.alumno_id %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="alumno_id" value="{{ alumno.alumno_id }}">
+                  <input type="text" name="nombre" value="{{ alumno.nombre }}">
+                  <input type="text" name="direccion" value="{{ alumno.direccion }}">
+                  <input type="text" name="telefono" value="{{ alumno.telefono }}">
+                  <select name="sexo">
+                    <option value="M" {% if alumno.sexo == "M" %}selected{% endif %}>Masculino</option>
+                    <option value="F" {% if alumno.sexo == "F" %}selected{% endif %}>Femenino</option>
+                  </select>
+                  <input type="text" name="edad" value="{{ alumno.edad }}">
+                  <select name="pago">
+                    <option value="false" {% if not alumno.pago %}selected{% endif %}>False</option>
+                    <option value="true" {% if alumno.pago %}selected{% endif %}>True</option>
+                  </select>
+                  <button type="submit" class="btn btn-success">Guardar</button>
+                </form>
+              </td>
               <td>
-                <button class="btn btn-danger" onclick="eliminarAlumno({{ alumno.alumno_id }})">Eliminar</button>
+                <form method="post" action="{% url 'tienda:eliminar_alumno' alumno.alumno_id %}" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este alumno?');">
+                  {% csrf_token %}
+                  <input type="hidden" name="alumno_id" value="{{ alumno.alumno_id }}">
+                  <button type="submit" class="btn btn-danger">Eliminar</button>
+                </form>                
               </td>
             </tr>
           {% endfor %}
@@ -44,54 +63,5 @@
       </table>
     </div>
   </div>
-
-  
-  <script>
-    
-    $(document).ready(function() {
-  $('#alumnos-table').DataTable({
-    language: {
-      search: 'Buscar:',
-      show: 'Mostrar MAX alumnos',
-      entries: 'Mostrar alumnos por página',
-      info: 'Mostrando START a END de TOTAL alumnos',
-      infoEmpty: 'Mostrando 0 a 0 de 0 alumnos',
-      infoFiltered: '(filtrado de un total de MAX alumnos)',
-      paginate: {
-        first: '<a class="first-page-btn">Primero</a>',
-        last: '<a class="last-page-btn">Último</a>',
-        next: '<a class="next-page-btn btn btn-primary">Siguiente</a>',
-        previous: '<a class="prev-page-btn btn btn-primary">Anterior</a>'
-      }
-    },
-    dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"f>>' +
-         '<"row"<"col-sm-12"tr>>' +
-         '<"row"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
-  });
-});
-
-
-    function eliminarAlumno(alumno_id) {
-      console.log('Eliminar alumno con ID:', alumno_id);
-      if (confirm("¿Estás seguro que deseas eliminar este alumno?")) {
-        // Envía una solicitud AJAX para eliminar el alumno
-        $.ajax({
-          url: `/alumnos/eliminar/${alumno_id}/`,  // Ajusta la ruta según tu configuración
-          method: 'POST',
-          data: {
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-          },
-          success: function(response) {
-            console.log('Alumno eliminado correctamente.');
-            // Actualiza la página para reflejar el cambio
-            location.reload();
-          },
-          error: function(error) {
-            console.error('Error al eliminar el alumno:', error);
-          }
-        });
-      }
-    }
-  </script>
-
+</div>
 {% endblock body %}

@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from .models import ClaseNatacion, Alumno
@@ -8,6 +8,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models.query_utils import Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+
 
 
 
@@ -95,6 +96,24 @@ def detalle_alumno(request, alumno_id):
 #    })
 
 
+@permission_required('TIENDA.agregar_clase')
+def agregar_clase(request):
+    if request.method == 'POST':
+        if 'clase_natacion_form' in request.POST:
+                clase_natacion_form = ClaseNatacionForm(request.POST)
+                if clase_natacion_form.is_valid():
+                    # Guardar la clase de natación en la base de datos
+                    # Redireccionar o hacer lo que necesites con la clase de natación
+                    clase_natacion = clase_natacion_form.save(commit=False)
+                    clase_natacion.clase_id = clase_natacion_form.cleaned_data.get('clase_id')  # Aquí debes asignar el valor correcto
+                    clase_natacion.save()  # Ahora puedes guardarla en la base de datos
+    else:
+        clase_natacion_form = ClaseNatacionForm()
+
+    return render(request, 'tienda/agregar_clase.html', {'clase_natacion_form': clase_natacion_form})
+
+
+
 @permission_required('TIENDA.agregar_alumno')
 def agregar_alumno(request):
     if request.method == 'POST':
@@ -129,23 +148,6 @@ def agregar_alumno(request):
     return render(request, 'tienda/agregar_alumno.html', {'alumno_form': alumno_form})
 
 
-@permission_required('TIENDA.agregar_clase')
-def agregar_clase(request):
-    if request.method == 'POST':
-        if 'clase_natacion_form' in request.POST:
-                clase_natacion_form = ClaseNatacionForm(request.POST)
-                if clase_natacion_form.is_valid():
-                    # Guardar la clase de natación en la base de datos
-                    # Redireccionar o hacer lo que necesites con la clase de natación
-                    clase_natacion = clase_natacion_form.save(commit=False)
-                    clase_natacion.clase_id = clase_natacion_form.cleaned_data.get('clase_id')  # Aquí debes asignar el valor correcto
-                    clase_natacion.save()  # Ahora puedes guardarla en la base de datos
-    else:
-        clase_natacion_form = ClaseNatacionForm()
-
-    return render(request, 'tienda/agregar_clase.html', {'clase_natacion_form': clase_natacion_form})
-
-
 def crear_actualizar_alumno(request, alumno_id=None):
     # ... lógica para crear o actualizar un alumno ...
 
@@ -166,29 +168,38 @@ def crear_actualizar_alumno(request, alumno_id=None):
 
 
 
-
-
-
-
-
-
-
-
 @permission_required('TIENDA.edit_alumno')
 def editar_alumno(request, alumno_id):
-    alumno = get_object_or_404(Alumno, pk=alumno_id)
     if request.method == 'POST':
-        form = AlumnoForm(request.POST, instance=alumno)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('lista_alumnos'))
-    else:
-        form = AlumnoForm(instance=alumno)
-    return render(request, 'editar_alumno.html', {'form': form, 'alumno': alumno})
+        nombre = request.POST.get('nombre')
+        direccion = request.POST.get('direccion')
+        telefono = request.POST.get('telefono')
+        sexo = request.POST.get('sexo')
+        edad = request.POST.get('edad')
+        pago = request.POST.get('pago')
 
+        try:
+            alumno = get_object_or_404(Alumno, pk=alumno_id)
+            alumno.nombre = nombre
+            alumno.direccion = direccion
+            alumno.telefono = telefono
+            alumno.sexo = sexo
+            alumno.edad = edad
 
+            # Validación y conversión del campo 'pago' a booleano
+            pago_bool = pago.lower() == 'true' if pago.lower() in ['true', 'false'] else False
+            alumno.pago = pago_bool
 
+            # Guardar los cambios
+            alumno.save()
 
+            # Redirigir a la lista de alumnos después de editar exitosamente
+            return redirect('tienda:lista_alumnos')
+
+        except Alumno.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Alumno no encontrado'})
+    
+    return JsonResponse({'success': False, 'error': 'Método no válido'})
 
 
 @csrf_exempt
@@ -200,7 +211,7 @@ def eliminar_alumno(request, alumno_id):
             print('Alumno encontrado:', alumno.nombre)
             alumno.delete()
             print('Alumno eliminado correctamente.')
-            return JsonResponse({'message': 'Alumno eliminado correctamente.'}, status=200)
+            return redirect('tienda:lista_alumnos')
         except Alumno.DoesNotExist:
             print('No se encontró el alumno con ID:', alumno_id)
             return JsonResponse({'error': 'Alumno no encontrado.'}, status=404)
