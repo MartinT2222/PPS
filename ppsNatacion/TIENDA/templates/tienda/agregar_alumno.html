@@ -2,106 +2,11 @@
 {% load static %}
 
 {% block body %}
-  <a href="{% url 'tienda:home' %}" class="btn btn-primary">Volver al inicio</a>
-  <h2>Agregar Alumno</h2>
-
-  <div class="row">
-    <div class="col-md-4">
-      <!-- Formulario para agregar un alumno -->
-      <form action="." method="POST" enctype="multipart/form-data" class="mt-2">
-        {% csrf_token %}
-        {{ alumno_form.as_p }}
-
-        <button type="submit" name="alumno_form" class="btn btn-primary">Agregar Alumno</button>
-      </form>
-    </div>
-  </div>
-
-  <!-- Contenedor para mostrar la tabla de datos del alumno -->
-  <div id="alumno-data" style="display: none;">
-    <div class="row">
-      <div class="col-md-12">
-        <h3>Datos del Alumno Registrado</h3>
-        <table id="alumno-table" class="display">
-          <thead>
-            <tr>
-              <!-- Encabezados de la tabla -->
-              <th>alumno id</th>
-              <th>Nombre</th>
-              <th>Dirección</th>
-              <th>Teléfono</th>
-              <th>sexo</th>
-              <th>edad</th>
-              <th>email</th>
-              <th>fecha inscripcion</th>
-              <th>telefono emergencia</th>
-              <th>mensualidad</th>
-              <th>membresia vip</th>
-              <th>alergias</th>
-              <th>docente a cargo</th>
-              <th>clase natacion</th>
-              <!-- Agrega más encabezados según los datos que mostrarás -->
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td id="alumno-id"></td>
-              <td id="alumno-nombre"></td>
-              <td id="alumno-direccion"></td>
-              <td id="alumno-telefono"></td>
-              <td id="alumno-sexo"></td>
-              <td id="alumno-edad"></td>
-              <td id="alumno-email"></td>
-              <td id="alumno-fecha-inscripcion"></td>
-              <td id="alumno-telefono-emergencia"></td>
-              <td id="alumno-mensualidad"></td>
-              <td id="alumno-membresia-vip"></td>
-              <td id="alumno-alergias"></td>
-              <td id="alumno-docente-a-cargo"></td>
-              <td id="alumno-clase-natacion"></td>
-              <!-- Agrega más celdas según los datos que quieras mostrar -->
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    $(document).ready(function() {
-      console.log('Script: Inicio del documento listo.');
-    
-      $('#alumno-table').DataTable();
-    
-      function mostrarDatosAlumno(datos_alumno) {
-        console.log('Script: Mostrar datos del alumno:', datos_alumno);
-    
-        $('#alumno-data').show();
-        var tbody = $('#alumno-table tbody');
-        tbody.empty();  // Limpiar el cuerpo de la tabla antes de agregar datos
-        
-        var row = $('<tr>');  // Crear una fila
-        row.append($('<td>').text(datos_alumno.alumno_id));
-        row.append($('<td>').text(datos_alumno.nombre));
-        row.append($('<td>').text(datos_alumno.direccion));
-        row.append($('<td>').text(datos_alumno.telefono));
-        row.append($('<td>').text(datos_alumno.sexo));
-        row.append($('<td>').text(datos_alumno.edad));
-        row.append($('<td>').text(datos_alumno.email));
-        row.append($('<td>').text(datos_alumno.fecha_inscripcion));
-        row.append($('<td>').text(datos_alumno.telefono_emergencia));
-        row.append($('<td>').text(datos_alumno.mensualidad));
-        row.append($('<td>').text(datos_alumno.membresia_vip));
-        row.append($('<td>').text(datos_alumno.alergias));
-        row.append($('<td>').text(datos_alumno.docente_a_cargo));
-        row.append($('<td>').text(datos_alumno.clase_natacion));
-        tbody.append(row);  // Agregar la fila al cuerpo de la tabla
-      }
-    
-      // Llamada a la función para mostrar los datos del alumno
-      // Esta llamada debería realizarse cuando se ha registrado un alumno exitosamente
-      mostrarDatosAlumno({{ datos_alumno|safe }});
-    });
-  </script>
-  
+  <h2 class="titulo">Agregar Nuevo Alumno</h2>
+  <form method="post" action="{% url 'tienda:agregar_alumno' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Guardar Alumno</button>
+  </form>
+  <a href="{% url 'tienda:lista_alumnos' %}" class="btn btn-primary btn-volver">Volver a la lista de alumnos</a>
 {% endblock body %}
