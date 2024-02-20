@@ -22,8 +22,22 @@
       </div>
       <hr>
       <div class="form-group">
+        <label for="id_descuento">Descuento:</label>
+        <select id="id_descuento">
+          <option value="0">Sin descuento</option>
+          <option value="0.1">10%</option>
+          <option value="0.2">20%</option>
+          <option value="0.3">30%</option>
+          <option value="0.4">40%</option>
+          <option value="0.5">50%</option>
+        </select>
+      </div>
+      <hr>
+      <div class="form-group">
         <label for="id_precio_total">Precio Total:</label>
         <input type="text" id="id_precio_total" readonly>
+        <!-- Agregar el campo oculto para el precio total -->
+        <input type="hidden" id="id_precio_total_hidden" name="precio_total" value="">
       </div>
       <hr>
         
@@ -33,35 +47,89 @@
   </div>
   <script>
     $(document).ready(function() {
-      $('#id_clase_comprada').change(function() {
-          var claseSeleccionada = $(this).val();
-          if (claseSeleccionada) {
-              $.ajax({
-                  url: '/obtener_precio_clase/',  // URL de la vista para obtener el precio de la clase
-                  data: {
-                      'clase_comprada': claseSeleccionada
-                  },
-                  dataType: 'json',
-                  success: function(data) {
-                      $('#id_precio_clase').val(data.precio);
-                  }
-              });
-          } else {
-              $('#id_precio_clase').val('');
-          }
-      });
-      $('#id_cupos_disponibles_pagos').on('input', function() {
-          var precioBase = parseFloat($('#id_precio_clase').val());
-          var cupos = parseInt($(this).val()); 
-          
-          // Verificar si los valores son números válidos
-          if (!isNaN(precioBase) && !isNaN(cupos)) {
-              var precioTotal = precioBase * cupos;
-              
-              // Actualizar el campo de precio total
-              $('#id_precio_total').val(precioTotal.toFixed(2));
-          }
-      });
+        $('#id_clase_comprada').change(function() {
+            var claseSeleccionada = $(this).val();
+            if (claseSeleccionada) {
+                $.ajax({
+                    url: '/obtener_precio_clase/',  // URL de la vista para obtener el precio de la clase
+                    data: {
+                        'clase_comprada': claseSeleccionada
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        $('#id_precio_clase').val(data.precio);
+                        actualizarPrecioTotal(claseSeleccionada); // Pasar el nombre de la clase seleccionada
+                    }
+                });
+            } else {
+                $('#id_precio_clase').val('');
+                actualizarPrecioTotal(claseSeleccionada); // Pasar el nombre de la clase seleccionada
+            }
+        });
+
+        $('#id_cupos_disponibles_pagos, #id_descuento').on('input', actualizarPrecioTotal);
+
+        function actualizarPrecioTotal(nombreClase) {
+            var precioBase = parseFloat($('#id_precio_clase').val());
+            var cupos = parseInt($('#id_cupos_disponibles_pagos').val());
+            var descuentoPorcentaje = parseFloat($('#id_descuento').val());
+            var nombreClase = $('#id_clase_comprada option:selected').text();
+            console.log('nombreClase:', nombreClase);
+            // Verificar si los valores son números válidos
+            if (!isNaN(precioBase) && !isNaN(cupos)) {
+                var precioTotal = 0;
+                var aumentoPorClase = 500;
+                var diferenciaPorClase = 0;
+                var diferenciaPorClase2 = 0;
+
+                // Verificar el nombre de la clase seleccionada y ajustar el precio total si es necesario
+                if (nombreClase === "Natación") {
+                    diferenciaPorClase += 500; // Por ejemplo, aumentar en 500 unidades
+                    
+                } else if (nombreClase === "Equipo Competencia Federados") {
+                    diferenciaPorClase2 -= 2500; // Por ejemplo, disminuir en 2500 unidades
+                }
+                
+                switch (cupos) {
+                    case 1:
+                        precioTotal = precioBase;
+                        break;
+                    case 2:
+                        precioTotal = precioBase * 3 + diferenciaPorClase + diferenciaPorClase2;
+                        break;
+                    case 3:
+                        precioTotal = precioBase * 3 + (aumentoPorClase * 1) + diferenciaPorClase;
+                        break;
+                    case 4:
+                        precioTotal = precioBase * 3 + (aumentoPorClase * 2) + diferenciaPorClase;
+                        break;
+                    case 5:
+                        precioTotal = precioBase * 3 + (aumentoPorClase * 3) + diferenciaPorClase;
+                        break;
+                    default:
+                        // Si el número de cupos no coincide con ningún caso, dejar el precio total en cero
+                        precioTotal = 0;
+                        break;
+                }
+
+                // Aplicar el descuento al precio total
+                precioTotal *= (1 - descuentoPorcentaje);
+
+                // Actualizar el campo de precio total
+                $('#id_precio_total').val(precioTotal.toFixed(2));
+                // Actualizar el campo oculto para el precio total
+                $('#id_precio_total_hidden').val(precioTotal.toFixed(2));
+            }
+        }
     });
-  </script>
+</script>
 {% endblock body %}
+
+
+
+
+
+
+
+
+                  

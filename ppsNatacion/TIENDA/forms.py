@@ -48,15 +48,29 @@ class ClaseNatacionForm(forms.ModelForm):
 
 
 
-
 class CompraForm(forms.ModelForm):
+    precio_total = forms.DecimalField(max_digits=10, decimal_places=2, required=False)
     class Meta:
         model = ComprasClase
-        fields = ['clase_comprada', 'precio_clase', 'cupos_disponibles_pagos']
+        fields = ['clase_comprada', 'precio_clase', 'cupos_disponibles_pagos', 'precio_total']
+        labels = {
+            'cupos_disponibles_pagos': 'Horas Semanales:'
+        }
         widgets = {
             'precio_clase': forms.TextInput(attrs={'readonly': 'readonly'}),
-            'cupos_disponibles_pagos': forms.NumberInput(attrs={'value': 1}),
         }
+
+    HORAS_SEMANA = (
+        (1, '1 clase Eventual'),
+        (2, '2 horas por semana'),
+        (3, '3 horas por semana'),
+        (4, '4 horas por semana'),
+        (5, '5 horas por semana'),
+        (6, '6 horas por semana'),       
+        (8, '8 horas por semana'),      
+        (10, '10 horas por semana'),
+        (12, '12 horas por semana'),
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -69,44 +83,7 @@ class CompraForm(forms.ModelForm):
         
         # Asigna las opciones al campo 'clase_comprada'
         self.fields['clase_comprada'].widget = forms.Select(choices=choices)
-
-    def clean(self):
-        cleaned_data = super().clean()
-        clase_comprada = cleaned_data.get('clase_comprada')
-        
-        # Obtén el precio de la clase seleccionada
-        precio_clase = ClaseNatacion.objects.get(nombre=clase_comprada).precio
-        cleaned_data['precio_clase'] = precio_clase
-        
-        # Realiza la validación u otras operaciones de limpieza según sea necesario
-        return cleaned_data
-    
-class CompraForm(forms.ModelForm):
-    class Meta:
-        model = ComprasClase
-        fields = ['clase_comprada', 'precio_clase', 'cupos_disponibles_pagos']
-        labels = {
-            'cupos_disponibles_pagos': 'Horas Mensuales:'
-        }
-        widgets = {
-            'precio_clase': forms.TextInput(attrs={'readonly': 'readonly'}),  
-            'cupos_disponibles_pagos': forms.NumberInput(attrs={'value': 1}),
-        }
-        
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        # Obtén la lista de nombres de clases sin repeticiones
-        nombres_clases = ClaseNatacion.objects.values_list('nombre', flat=True).distinct()
-        
-        # Crea una lista de tuplas para usar en el campo 'choices'
-        choices = [(nombre, nombre) for nombre in nombres_clases]
-        
-        #choices2 = [(precio, precio) for precio in precio_clases]
-        # Asigna las opciones al campo 'clase_comprada'
-        self.fields['clase_comprada'].widget = forms.Select(choices=choices)
-        #self.fields['precio_clase'].widget = forms.Select(choices=choices2)
-        
+        self.fields['cupos_disponibles_pagos'].widget = forms.Select(choices=self.HORAS_SEMANA)
         
     def clean(self):
         cleaned_data = super().clean()
@@ -114,8 +91,9 @@ class CompraForm(forms.ModelForm):
         return cleaned_data
 
 
-#precio_clases = ClaseNatacion.objects.values_list('precio', flat=True).distinct()
-#        print(f"precio_clases: {precio_clases}")        
+
+
+
         
 class InscripcionForm(forms.ModelForm):
     class Meta:

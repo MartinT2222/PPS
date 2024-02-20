@@ -454,6 +454,10 @@ def eliminar_compra(request, compra_id):
     messages.success(request, 'La compra ha sido eliminada exitosamente.')
     return redirect(reverse('tienda:ver_mas_usuario', kwargs={'usuario_id': usuario_id}))
 
+
+
+
+
 def agregar_compra(request, usuario_id):
     usuario = get_object_or_404(CustomUser, pk=usuario_id)
     compras = ComprasClase.objects.filter(usuario=usuario)
@@ -463,14 +467,12 @@ def agregar_compra(request, usuario_id):
         
         if form.is_valid():
             nombre_clase = form.cleaned_data['clase_comprada']
-            precio_clase = form.cleaned_data['precio_clase']
+            precio_clase = form.cleaned_data['precio_total']
             cupos_disponibles = form.cleaned_data['cupos_disponibles_pagos']
-            print(f"cupos_disponibles: {cupos_disponibles}")
-            print(f"precio_clase: {precio_clase}")
-            
-            # Calcular el precio total
-            precio_total = precio_clase * cupos_disponibles # descuento
-            print(f"precio_total: {precio_total}")
+            print(f"cupos_disponibles por SEMANA: {cupos_disponibles}")
+            cupos_disponibles = cupos_disponibles * 5
+            print(f"cupos_disponibles por MES: {cupos_disponibles}")
+            print(f"precio_total: {precio_clase}")
             # Verificar si hay una compra existente con el mismo nombre
             compra_existente = ComprasClase.objects.filter(
                 usuario=usuario,
@@ -479,7 +481,7 @@ def agregar_compra(request, usuario_id):
 
             if compra_existente:
                 # Si existe, actualizar la compra existente
-                compra_existente.precio_clase = precio_total
+                compra_existente.precio_clase = precio_clase
                 compra_existente.cupos_disponibles_pagos += cupos_disponibles
                 compra_existente.fecha_compra = timezone.now()
                 compra_existente.save()  # Guardar la compra actualizada
@@ -488,7 +490,7 @@ def agregar_compra(request, usuario_id):
                 ComprasClase.objects.create(
                     usuario=usuario,
                     clase_comprada=nombre_clase,
-                    precio_clase=precio_total,
+                    precio_clase=precio_clase,
                     cupos_disponibles_pagos=cupos_disponibles
                 )
 
