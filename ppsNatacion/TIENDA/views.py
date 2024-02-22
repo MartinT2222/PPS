@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect, JsonResponse, HttpResponseServerEr
 from django.urls import reverse
 from USUARIOS.models import CustomUser
 from USUARIOS.forms import RegistroForm
-from .forms import ClaseNatacionForm, CompraForm, InscripcionForm  # Importa el formulario de clase de natación
+from .forms import ClaseNatacionForm, CompraForm, InscripcionForm ,ClaseNatacionFilterForm # Importa el formulario de clase de natación
 from .models import ClaseNatacion, InscripcionClase, ComprasClase
 from datetime import datetime, timedelta
 from django.contrib import messages
@@ -27,15 +27,18 @@ def home(request):
     translation.activate('es')
     clases = ClaseNatacion.objects.all()
     clases_unicas = {}
+
     for clase in clases:
         nombre = clase.nombre
         dias = [_(clase.fecha.strftime('%A'))]
         hora_inicio = clase.hora_inicio.strftime('%H:%M')
         hora_fin = clase.hora_fin.strftime('%H:%M')
-        precio = clase.precio  # Precio por 1 clase
+        precio_base = clase.precio  # Precio por 1 clase
         cupos_disponibles_pagos = 0
         imagen = ClaseNatacion.objects.filter(nombre=nombre).first().imagen
-        
+
+        precios = calcular_precio_total(precio_base, cupos_disponibles_pagos, nombre)
+
         if nombre not in clases_unicas:
             clases_unicas[nombre] = {
                 'id': clase.id,  # Agrega el ID de la clase
@@ -43,27 +46,63 @@ def home(request):
                 'dias': dias,
                 'hora_inicio': hora_inicio,
                 'hora_fin': hora_fin,
-                'precio': precio,
-                'precio_por_2_clases': precio * 2,
-                'precio_por_3_clases': precio * 3,
-                'precio_por_4_clases': precio * 4,
-                'precio_por_5_clases': precio * 5,
-                'precio_por_6_clases': precio * 6,
+                **precios,
                 'imagen': imagen,
                 'cupos': cupos_disponibles_pagos
-                
             }
         else:
             if dias[0] not in clases_unicas[nombre]['dias']:
                 clases_unicas[nombre]['dias'].append(dias[0])
-    
-    
+
     context = {
         'clases': clases_unicas.values(),
     }
-    
+
     # Renderiza la plantilla y envía el contexto
     return render(request, 'tienda/index.html', context)
+
+def calcular_precio_total(precio_base, cupos, nombre_clase):
+    aumento_por_clase = 500
+    diferencia_por_clase = 0
+    diferencia_por_clase2 = 0
+
+    if nombre_clase == "Natación":
+        diferencia_por_clase += 500
+        precios = {
+            'precio': precio_base, # 2500
+            'precio_por_2_clases': precio_base * 3 + diferencia_por_clase , #8000
+            'precio_por_3_clases': precio_base * 3 + (aumento_por_clase * 1) + diferencia_por_clase, #8500
+            'precio_por_4_clases': precio_base * 3 + (aumento_por_clase * 2) + diferencia_por_clase, #9000
+            'precio_por_5_clases': precio_base * 3 + (aumento_por_clase * 3) + diferencia_por_clase, #9500
+            'precio_por_6_clases': precio_base * 3 + (aumento_por_clase * 4) + diferencia_por_clase, #10000
+        }
+    elif nombre_clase == "Equipo Competencia Federados":
+        diferencia_por_clase2 -= 2500
+        precios = {
+            'precio': precio_base, # 2500 
+            'precio_por_2_clases': precio_base * 2  , #5000
+            'precio_por_3_clases': precio_base * 2 + (aumento_por_clase * 1), #5500
+            'precio_por_4_clases': precio_base * 2 + (aumento_por_clase * 2) , #6000
+            'precio_por_5_clases': precio_base * 2 + (aumento_por_clase * 3) ,#6500
+            'precio_por_6_clases': precio_base * 2 + (aumento_por_clase * 5) ,#7000
+            'precio_por_8_clases': precio_base * 2 + (aumento_por_clase * 5) ,#7500
+            'precio_por_10_clases': precio_base * 2 + (aumento_por_clase * 6) , #8000
+            'precio_por_12_clases': precio_base * 2 + (aumento_por_clase * 7) , #8500
+        }
+    elif nombre_clase == "Escuela de Natación":
+        diferencia_por_clase2 -= 2500
+        precios = {
+            'precio': precio_base, # 2500 
+            'precio_por_2_clases': precio_base * 3, #7500
+            'precio_por_3_clases': precio_base * 3 + (aumento_por_clase * 1), #8000
+            'precio_por_4_clases': precio_base * 3 + (aumento_por_clase * 2) , #8500
+            'precio_por_5_clases': precio_base * 3 + (aumento_por_clase * 3), #9000
+            
+        }
+
+    return precios
+
+
 
 
 def buscar(request):
@@ -435,15 +474,7 @@ def AgregarAlumno(request):
     return render(request, template_name, {'form': form})
 
 
-def obtener_precio_clase(request):
-    if request.method == 'GET':
-        clase_comprada = request.GET.get('clase_comprada')
-        if clase_comprada:
-            # Obtener el precio de la clase seleccionada
-            precio = ClaseNatacion.objects.filter(nombre=clase_comprada).values_list('precio', flat=True).first()
-            if precio is not None:
-                return JsonResponse({'precio': precio})
-    return JsonResponse({'error': 'No se pudo obtener el precio de la clase'}, status=400)
+
 
 
 @require_POST
@@ -456,12 +487,30 @@ def eliminar_compra(request, compra_id):
 
 
 
-
+def obtener_precio_clase(request):
+    if request.method == 'GET':
+        clase_comprada = request.GET.get('clase_comprada')
+        if clase_comprada:
+            # Obtener el precio de la clase seleccionada
+            precio = ClaseNatacion.objects.filter(nombre=clase_comprada).values_list('precio', flat=True).first()
+            if precio is not None:
+                return JsonResponse({'precio': precio})
+    return JsonResponse({'error': 'No se pudo obtener el precio de la clase'}, status=400)
 
 def agregar_compra(request, usuario_id):
     usuario = get_object_or_404(CustomUser, pk=usuario_id)
     compras = ComprasClase.objects.filter(usuario=usuario)
-
+    HORAS_SEMANA = (
+        (1, '1 clase Eventual'),
+        (2, '2 horas por semana'),
+        (3, '3 horas por semana'),
+        (4, '4 horas por semana'),
+        (5, '5 horas por semana'),
+        (6, '6 horas por semana'),       
+        (8, '8 horas por semana'),      
+        (10, '10 horas por semana'),
+        (12, '12 horas por semana'),
+    )
     if request.method == 'POST':
         form = CompraForm(request.POST)
         
@@ -498,7 +547,7 @@ def agregar_compra(request, usuario_id):
     else:
         form = CompraForm()
 
-    return render(request, 'tienda/agregar_compra.html', {'form': form, 'usuario': usuario, 'compras': compras})
+    return render(request, 'tienda/agregar_compra.html', {'form': form, 'usuario': usuario, 'compras': compras, 'HORAS_SEMANA': HORAS_SEMANA})
 
 
 
@@ -641,48 +690,33 @@ def capturar_id_Admin(request, usuario_id):
         return JsonResponse({'error': f'Error interno del servidor: {str(e)}'}, status=500)
 
 
-from django.db import IntegrityError
 
-def modificar_clase(request, clase_id):
-    clase = get_object_or_404(ClaseNatacion, pk=clase_id)
-    
+
+@permission_required('TIENDA.clase_natacion_list')
+def clase_natacion_list(request):
+    clases = ClaseNatacion.objects.all()
+    form = ClaseNatacionFilterForm(request.POST or None, request.FILES or None)
+
     if request.method == 'POST':
-        form = ClaseNatacionForm(request.POST, request.FILES, instance=clase)
         if form.is_valid():
-            ClaseNatacion.objects.filter(nombre=clase.nombre).delete()
-            hora_inicio = form.cleaned_data['hora_inicio']
-            hora_fin = form.cleaned_data['hora_fin']
-            dias_semana = request.POST.getlist('dias_semana')
+            clases = form.filtrar_clases(clases)
+            action = request.POST.get('action')
+            if action == 'modificar':
+                clases_filtradas = form.filtrar_clases(clases)
+                #print(f'clases{clases}')
+                print(f'clases_filtradas{clases_filtradas}')
+                nuevo_precio = form.cleaned_data.get('nuevo_precio')
+                print(f'nuevo_precio{nuevo_precio}')
+                for clase in clases_filtradas:
+                    if nuevo_precio:
+                        clase.precio = nuevo_precio
+                    clase.save()
+                return HttpResponseRedirect(reverse('tienda:clase_natacion_list'))
 
-            nueva_clase = form.save(commit=False)
+    # Si no se cumple la condición para modificar, asigna una lista vacía a clases_filtradas
+    clases_filtradas = []
 
-            horarios_recurrentes = generar_horarios_recurrentes(dias_semana, hora_inicio, hora_fin)
-            ClaseNatacion.objects.filter(nombre=clase.nombre).delete()
-            for fecha in horarios_recurrentes:
-                try:
-                    
-                    nueva_instancia = ClaseNatacion.objects.create(
-                        nombre=nueva_clase.nombre,
-                        fecha=fecha,
-                        hora_inicio=hora_inicio,
-                        hora_fin=hora_fin,
-                        cupos_disponibles=nueva_clase.cupos_disponibles,
-                        precio=nueva_clase.precio,
-                        imagen=nueva_clase.imagen  # Asigna la imagen a cada instancia
-                    )
-                    nueva_instancia.save()
-                except IntegrityError as e:
-                    print(f"Error de integridad al guardar para la fecha {fecha}: {e}")
-                    # Manejo específico para la excepción de integridad, puedes agregar aquí lo que consideres necesario
-
-            messages.success(request, 'Las clases se han guardado exitosamente!')
-            return redirect('tienda:home')
-    else:
-        form = ClaseNatacionForm(instance=clase)
-    
-    return render(request, 'tienda/modificar_clase.html', {'form': form})
-
-
+    return render(request, 'tienda/clase_natacion_list.html', {'clases': clases, 'form': form})
 
 
 

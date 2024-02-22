@@ -18,7 +18,9 @@
       <hr>
       <div class="form-group">
         {{ form.cupos_disponibles_pagos.label_tag }}
-        {{ form.cupos_disponibles_pagos }}
+        <select id="id_cupos_disponibles_pagos" name="cupos_disponibles_pagos">
+          <option value="">Seleccione las horas semanales</option>
+        </select>
       </div>
       <hr>
       <div class="form-group">
@@ -58,14 +60,59 @@
                     dataType: 'json',
                     success: function(data) {
                         $('#id_precio_clase').val(data.precio);
-                        actualizarPrecioTotal(claseSeleccionada); // Pasar el nombre de la clase seleccionada
+                        actualizarHorasSemana(claseSeleccionada); // Pasar el nombre de la clase seleccionada
+                        actualizarPrecioTotal(claseSeleccionada);
                     }
                 });
             } else {
                 $('#id_precio_clase').val('');
-                actualizarPrecioTotal(claseSeleccionada); // Pasar el nombre de la clase seleccionada
+                $('#id_cupos_disponibles_pagos').empty(); // Limpiar las opciones del campo de horas semanales
             }
         });
+
+        $('#id_descuento').on('input', actualizarPrecioTotal);
+
+        function actualizarHorasSemana(nombreClase) {
+            var horasSemana = {
+                'Natación': [
+                    { value: 1, text: '1 clase Eventual' },
+                    { value: 2, text: '2 horas por semana' },
+                    { value: 3, text: '3 horas por semana' },
+                    { value: 4, text: '4 horas por semana' },
+                    { value: 5, text: '5 horas por semana' },
+                    { value: 6, text: '6 horas por semana' }
+                ],
+                'Escuela de Natación': [
+                    { value: 1, text: '1 clase Eventual' },
+                    { value: 2, text: '2 horas por semana' },
+                    { value: 3, text: '3 horas por semana' },
+                    { value: 4, text: '4 horas por semana' },
+                    { value: 5, text: '5 horas por semana' }
+                ],
+                'Equipo Competencia Federados': [
+                    { value: 1, text: '1 clase Eventual' },
+                    { value: 2, text: '2 horas por semana' },
+                    { value: 3, text: '3 horas por semana' },
+                    { value: 4, text: '4 horas por semana' },
+                    { value: 5, text: '5 horas por semana' },
+                    { value: 6, text: '6 horas por semana' },
+                    { value: 8, text: '8 horas por semana' },
+                    { value: 10, text: '10 horas por semana' },
+                    { value: 12, text: '12 horas por semana' }
+                ]
+            };
+
+            // Limpiar las opciones actuales del campo de horas semanales
+            $('#id_cupos_disponibles_pagos').empty();
+
+            // Obtener las opciones correspondientes a la clase seleccionada
+            var options = horasSemana[nombreClase];
+
+            // Agregar las opciones al campo de horas semanales
+            $.each(options, function(index, value) {
+                $('#id_cupos_disponibles_pagos').append($('<option>').text(value.text).attr('value', value.value));
+            });
+        }
 
         $('#id_cupos_disponibles_pagos, #id_descuento').on('input', actualizarPrecioTotal);
 
@@ -75,6 +122,7 @@
             var descuentoPorcentaje = parseFloat($('#id_descuento').val());
             var nombreClase = $('#id_clase_comprada option:selected').text();
             console.log('nombreClase:', nombreClase);
+            
             // Verificar si los valores son números válidos
             if (!isNaN(precioBase) && !isNaN(cupos)) {
                 var precioTotal = 0;
@@ -98,14 +146,27 @@
                         precioTotal = precioBase * 3 + diferenciaPorClase + diferenciaPorClase2;
                         break;
                     case 3:
-                        precioTotal = precioBase * 3 + (aumentoPorClase * 1) + diferenciaPorClase;
+                        precioTotal = precioBase * 3 + (aumentoPorClase * 1) + diferenciaPorClase + diferenciaPorClase2;
                         break;
                     case 4:
-                        precioTotal = precioBase * 3 + (aumentoPorClase * 2) + diferenciaPorClase;
+                        precioTotal = precioBase * 3 + (aumentoPorClase * 2) + diferenciaPorClase + diferenciaPorClase2;
                         break;
                     case 5:
-                        precioTotal = precioBase * 3 + (aumentoPorClase * 3) + diferenciaPorClase;
+                        precioTotal = precioBase * 3 + (aumentoPorClase * 3) + diferenciaPorClase + diferenciaPorClase2;
                         break;
+                    case 6:
+                        precioTotal = precioBase * 3 + (aumentoPorClase * 4) + diferenciaPorClase + diferenciaPorClase2;
+                        break;
+                    case 8:
+                        precioTotal = precioBase * 3 + (aumentoPorClase * 5) + diferenciaPorClase + diferenciaPorClase2;
+                        break;
+                    case 10:
+                        precioTotal = precioBase * 3 + (aumentoPorClase * 6) + diferenciaPorClase + diferenciaPorClase2;
+                        break;
+                    case 12:
+                        precioTotal = precioBase * 3 + (aumentoPorClase * 7) + diferenciaPorClase + diferenciaPorClase2;
+                        break;
+                    
                     default:
                         // Si el número de cupos no coincide con ningún caso, dejar el precio total en cero
                         precioTotal = 0;
@@ -124,12 +185,3 @@
     });
 </script>
 {% endblock body %}
-
-
-
-
-
-
-
-
-                  

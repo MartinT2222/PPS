@@ -48,17 +48,10 @@ class ClaseNatacionForm(forms.ModelForm):
 
 
 
+
 class CompraForm(forms.ModelForm):
     precio_total = forms.DecimalField(max_digits=10, decimal_places=2, required=False)
-    class Meta:
-        model = ComprasClase
-        fields = ['clase_comprada', 'precio_clase', 'cupos_disponibles_pagos', 'precio_total']
-        labels = {
-            'cupos_disponibles_pagos': 'Horas Semanales:'
-        }
-        widgets = {
-            'precio_clase': forms.TextInput(attrs={'readonly': 'readonly'}),
-        }
+    cupos_disponibles_pagos = forms.ChoiceField(choices=(), required=False)  # Agregar el campo
 
     HORAS_SEMANA = (
         (1, '1 clase Eventual'),
@@ -83,14 +76,97 @@ class CompraForm(forms.ModelForm):
         
         # Asigna las opciones al campo 'clase_comprada'
         self.fields['clase_comprada'].widget = forms.Select(choices=choices)
-        self.fields['cupos_disponibles_pagos'].widget = forms.Select(choices=self.HORAS_SEMANA)
-        
+
     def clean(self):
         cleaned_data = super().clean()
         # Realiza la validación u otras operaciones de limpieza según sea necesario
+        
+        clase_comprada = cleaned_data.get('clase_comprada')
+        if clase_comprada:
+            if 'Natación' in clase_comprada:
+                self.fields['cupos_disponibles_pagos'].choices = self.HORAS_SEMANA[:6]
+            elif 'Escuela de Natación' in clase_comprada:
+                self.fields['cupos_disponibles_pagos'].choices = self.HORAS_SEMANA[:5]
+            elif 'Equipo Competencia Federados' in clase_comprada:
+                self.fields['cupos_disponibles_pagos'].choices = self.HORAS_SEMANA
+        
         return cleaned_data
 
+    class Meta:
+        model = ComprasClase
+        fields = ['clase_comprada', 'precio_clase', 'cupos_disponibles_pagos', 'precio_total']
+        labels = {
+            'cupos_disponibles_pagos': 'Horas Semanales:'
+        }
+        widgets = {
+            'precio_clase': forms.TextInput(attrs={'readonly': 'readonly'}),
+        }
 
+
+
+class ClaseNatacionFilterForm(forms.Form):
+    nombre = forms.CharField(required=False)
+    dia_semana = forms.MultipleChoiceField(
+        choices=[
+            ('1', 'Lunes'),
+            ('2', 'Martes'),
+            ('3', 'Miércoles'),
+            ('4', 'Jueves'),
+            ('5', 'Viernes'),
+            ('6', 'Sábado'),
+            ('7', 'Domingo'),
+        ],
+        widget=forms.CheckboxSelectMultiple(),
+        required=False
+    )
+    hora_inicio = forms.TimeField(label='Hora de inicio', required=False)
+    hora_fin = forms.TimeField(label='Hora de fin', required=False)
+
+    # Nuevos campos para el precio y la imagen
+    nuevo_precio = forms.DecimalField(label='Nuevo Precio', required=False)
+    
+    
+    def filtrar_clases(self, queryset):
+        nombre = self.cleaned_data.get('nombre')
+        dias_semana = self.cleaned_data.get('dia_semana')
+        hora_inicio = self.cleaned_data.get('hora_inicio')
+        hora_fin = self.cleaned_data.get('hora_fin')
+
+        # Filtrar por nombre exacto
+        if nombre:
+            queryset = queryset.filter(nombre=nombre) 
+        else:
+            return queryset  # Retorna todas las clases si no se especifica el nombre
+
+        # Si no se especifica ningún otro criterio, devuelve el queryset actual
+        if not dias_semana and not hora_inicio and not hora_fin:
+            return queryset
+
+        # Filtrar por día de la semana
+        if dias_semana and hora_inicio:  # Asegúrate de tener hora_inicio
+            horarios = []
+            dias = {'1': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5, '7': 6}
+            today = datetime.today()
+            for dia in dias_semana:
+                delta_days = (dias[dia] - today.weekday() + 7) % 7
+                fecha = today + timedelta(days=delta_days)
+                if hora_inicio:  # Asegúrate de tener hora_inicio
+                    fecha = fecha.replace(hour=hora_inicio.hour, minute=hora_inicio.minute, second=0, microsecond=0)
+                    while fecha <= today + timedelta(days=365):  # Limitar el rango a un año
+                        horarios.append(fecha)
+                        fecha += timedelta(days=7)
+            
+            queryset = queryset.filter(fecha__in=horarios)
+
+        # Filtrar por hora de inicio
+        if hora_inicio:
+            queryset = queryset.filter(hora_inicio__gte=hora_inicio)
+
+        # Filtrar por hora de fin
+        if hora_fin:
+            queryset = queryset.filter(hora_fin__lte=hora_fin)
+
+        return queryset
 
 
 

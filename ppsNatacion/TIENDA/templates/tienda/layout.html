@@ -87,6 +87,11 @@
                             <a class="nav-link" href="{% url 'tienda:agregar_clase' %}" style="color: #ffffff;">Agregar Clases</a>
                         </li>
                         {% endif %}
+                        {% if perms.TIENDA.clase_natacion_list %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tienda:clase_natacion_list' %}" style="color: #ffffff;">Modificar Clase</a>
+                        </li>
+                        {% endif %}
                         {% if user.is_authenticated %}
                             {% if not user.is_staff %} {# Verificar si el usuario no es administrador #}
                                 <li class="nav-item">

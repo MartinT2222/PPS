@@ -25,7 +25,7 @@ urlpatterns = [
     path('agregar_alumno/', views.AgregarAlumno, name='agregar_alumno'),
     path('agregar_compra/<int:usuario_id>/', views.agregar_compra, name='agregar_compra'),
     path('inscribir_alumno/<int:usuario_id>/', views.Inscripcion_alumno, name='Inscripcion_alumno'),
-    path('clase/<int:clase_id>/modificar/', views.modificar_clase, name='modificar_clase'),
     path('obtener_precio_clase/', views.obtener_precio_clase, name='obtener_precio_clase'),
     path('eliminar_compra/<int:compra_id>/', views.eliminar_compra, name='eliminar_compra'),
+    path('clases/', views.clase_natacion_list, name='clase_natacion_list'),
 ]
