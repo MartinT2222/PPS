@@ -51,7 +51,16 @@ class ClaseNatacionForm(forms.ModelForm):
 
 class CompraForm(forms.ModelForm):
     precio_total = forms.DecimalField(max_digits=10, decimal_places=2, required=False)
-    cupos_disponibles_pagos = forms.ChoiceField(choices=(), required=False)  # Agregar el campo
+    
+    class Meta:
+        model = ComprasClase
+        fields = ['clase_comprada', 'precio_clase', 'cupos_disponibles_pagos', 'precio_total']
+        labels = {
+            'cupos_disponibles_pagos': 'Horas Semanales:'
+        }
+        widgets = {
+            'precio_clase': forms.TextInput(attrs={'readonly': 'readonly'}),
+        }
 
     HORAS_SEMANA = (
         (1, '1 clase Eventual'),
@@ -90,17 +99,33 @@ class CompraForm(forms.ModelForm):
             elif 'Equipo Competencia Federados' in clase_comprada:
                 self.fields['cupos_disponibles_pagos'].choices = self.HORAS_SEMANA
         
+        # Imprimir las opciones disponibles para cupos_disponibles_pagos
+        print("Opciones disponibles para cupos_disponibles_pagos:", self.fields['cupos_disponibles_pagos'].choices)
+        
         return cleaned_data
 
-    class Meta:
-        model = ComprasClase
-        fields = ['clase_comprada', 'precio_clase', 'cupos_disponibles_pagos', 'precio_total']
-        labels = {
-            'cupos_disponibles_pagos': 'Horas Semanales:'
-        }
-        widgets = {
-            'precio_clase': forms.TextInput(attrs={'readonly': 'readonly'}),
-        }
+    def clean_cupos_disponibles_pagos(self):
+        cupos_disponibles = self.cleaned_data.get('cupos_disponibles_pagos')
+        try:
+            # Intenta convertir el valor a un entero
+            cupos_disponibles = int(cupos_disponibles)
+            
+            # Verifica si el valor está dentro del rango de opciones disponibles
+            horas_disponibles = [opcion[0] for opcion in self.HORAS_SEMANA]
+            if cupos_disponibles not in horas_disponibles:
+                raise forms.ValidationError('Seleccione una opción válida para las horas semanales.')
+                
+        except (TypeError, ValueError):
+            # Si no se puede convertir a un entero, levanta una excepción
+            raise forms.ValidationError('Seleccione una opción válida.')
+        
+        print("Valor de cupos_disponibles_pagos limpiado:", cupos_disponibles)
+        return cupos_disponibles
+
+
+    
+
+
 
 
 

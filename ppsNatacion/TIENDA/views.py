@@ -512,39 +512,45 @@ def agregar_compra(request, usuario_id):
         (12, '12 horas por semana'),
     )
     if request.method == 'POST':
+        #print("Datos recibidos en el formulario:", request.POST)
         form = CompraForm(request.POST)
-        
-        if form.is_valid():
-            nombre_clase = form.cleaned_data['clase_comprada']
-            precio_clase = form.cleaned_data['precio_total']
-            cupos_disponibles = form.cleaned_data['cupos_disponibles_pagos']
-            print(f"cupos_disponibles por SEMANA: {cupos_disponibles}")
-            cupos_disponibles = cupos_disponibles * 5
-            print(f"cupos_disponibles por MES: {cupos_disponibles}")
-            print(f"precio_total: {precio_clase}")
-            # Verificar si hay una compra existente con el mismo nombre
-            compra_existente = ComprasClase.objects.filter(
-                usuario=usuario,
-                clase_comprada=nombre_clase
-            ).first()
-
-            if compra_existente:
-                # Si existe, actualizar la compra existente
-                compra_existente.precio_clase = precio_clase
-                compra_existente.cupos_disponibles_pagos += cupos_disponibles
-                compra_existente.fecha_compra = timezone.now()
-                compra_existente.save()  # Guardar la compra actualizada
-            else:
-                # Si no existe, crear una nueva compra
-                ComprasClase.objects.create(
+        try:
+            if form.is_valid():
+                nombre_clase = form.cleaned_data['clase_comprada']
+                precio_clase = form.cleaned_data['precio_total']
+                cupos_disponibles = form.cleaned_data['cupos_disponibles_pagos']
+                print(f"cupos_disponibles por SEMANA: {cupos_disponibles}")
+                cupos_disponibles = cupos_disponibles * 5
+                print(f"cupos_disponibles por MES: {cupos_disponibles}")
+                print(f"precio_total: {precio_clase}")
+                # Verificar si hay una compra existente con el mismo nombre
+                compra_existente = ComprasClase.objects.filter(
                     usuario=usuario,
-                    clase_comprada=nombre_clase,
-                    precio_clase=precio_clase,
-                    cupos_disponibles_pagos=cupos_disponibles
-                )
+                    clase_comprada=nombre_clase
+                ).first()
 
-            return redirect('tienda:ver_mas_usuario', usuario_id=usuario_id)
+                if compra_existente:
+                    # Si existe, actualizar la compra existente
+                    compra_existente.precio_clase = precio_clase
+                    compra_existente.cupos_disponibles_pagos += cupos_disponibles
+                    compra_existente.fecha_compra = timezone.now()
+                    compra_existente.save()  # Guardar la compra actualizada
+                else:
+                    # Si no existe, crear una nueva compra
+                    ComprasClase.objects.create(
+                        usuario=usuario,
+                        clase_comprada=nombre_clase,
+                        precio_clase=precio_clase,
+                        cupos_disponibles_pagos=cupos_disponibles
+                    )
+
+                return redirect('tienda:ver_mas_usuario', usuario_id=usuario_id)
+            else:
+                print(form.errors)
+        except Exception as e:
+            print(f"Error al procesar la compra: {e}")
     else:
+        
         form = CompraForm()
 
     return render(request, 'tienda/agregar_compra.html', {'form': form, 'usuario': usuario, 'compras': compras, 'HORAS_SEMANA': HORAS_SEMANA})
