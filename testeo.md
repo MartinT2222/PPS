@@ -10,7 +10,7 @@
 * No Inscribir alumno cuando no hay cupos disponibles - true
 * Lista de turnos cancelar turno - true
 * Eliminar alumno - true
-
+* Modificar clase - true
 
 
 ## USUARIO

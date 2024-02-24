@@ -36,9 +36,9 @@ def home(request):
         precio_base = clase.precio  # Precio por 1 clase
         cupos_disponibles_pagos = 0
         imagen = ClaseNatacion.objects.filter(nombre=nombre).first().imagen
-
+        
         precios = calcular_precio_total(precio_base, cupos_disponibles_pagos, nombre)
-
+        
         if nombre not in clases_unicas:
             clases_unicas[nombre] = {
                 'id': clase.id,  # Agrega el ID de la clase
