@@ -28,4 +28,7 @@ urlpatterns = [
     path('obtener_precio_clase/', views.obtener_precio_clase, name='obtener_precio_clase'),
     path('eliminar_compra/<int:compra_id>/', views.eliminar_compra, name='eliminar_compra'),
     path('clases/', views.clase_natacion_list, name='clase_natacion_list'),
+    path('agregar_Noticia/', views.agregar_noticia, name='agregar_Noticia'),
+    
+    
 ]

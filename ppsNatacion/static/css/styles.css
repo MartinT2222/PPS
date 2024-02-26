@@ -294,6 +294,53 @@ body, html {
 }
 
 
+/* Estilos para el contenedor de noticias */
+.noticias-container {
+    background-color: #f8f9fa; /* Color de fondo */
+    padding: 20px; /* Espaciado interno */
+    border-radius: 10px; /* Borde redondeado */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+
+/* Estilos para el título de noticias */
+.noticias-container h2 {
+    color: #333; /* Color del texto */
+    font-size: 24px; /* Tamaño de la fuente */
+    margin-bottom: 20px; /* Espaciado inferior */
+}
+
+/* Estilos para las noticias individuales */
+.noticia {
+    margin-bottom: 20px; /* Espaciado inferior */
+    border-bottom: 1px solid #ddd; /* Línea divisoria */
+    padding-bottom: 20px; /* Espaciado interno inferior */
+}
+
+/* Estilos para el título de la noticia */
+.noticia h3 {
+    color: #555; /* Color del texto */
+    font-size: 20px; /* Tamaño de la fuente */
+    margin-bottom: 10px; /* Espaciado inferior */
+}
+
+/* Estilos para el resumen de la noticia */
+.noticia p {
+    color: #777; /* Color del texto */
+    font-size: 16px; /* Tamaño de la fuente */
+    margin-bottom: 10px; /* Espaciado inferior */
+}
+
+/* Estilos para el enlace "Leer más" */
+.noticia a {
+    color: #007bff; /* Color del enlace */
+    text-decoration: none; /* Sin subrayado */
+    font-weight: bold; /* Negrita */
+    transition: color 0.3s; /* Transición suave de color */
+}
+
+.noticia a:hover {
+    color: #0056b3; /* Color del enlace al pasar el mouse */
+}
 
 
 

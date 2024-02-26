@@ -6,8 +6,8 @@ from django.http import HttpResponseRedirect, JsonResponse, HttpResponseServerEr
 from django.urls import reverse
 from USUARIOS.models import CustomUser
 from USUARIOS.forms import RegistroForm
-from .forms import ClaseNatacionForm, CompraForm, InscripcionForm ,ClaseNatacionFilterForm # Importa el formulario de clase de natación
-from .models import ClaseNatacion, InscripcionClase, ComprasClase
+from .forms import ClaseNatacionForm, CompraForm, InscripcionForm ,ClaseNatacionFilterForm, NoticiaForm # Importa el formulario de clase de natación
+from .models import ClaseNatacion, InscripcionClase, ComprasClase , Noticia
 from datetime import datetime, timedelta
 from django.contrib import messages
 from django.utils import timezone, translation
@@ -19,7 +19,7 @@ from django.utils.translation import gettext as _
 from django.db import transaction
 from decimal import Decimal, InvalidOperation
 
-
+from django.contrib.auth.decorators import user_passes_test
 
 
 
@@ -54,12 +54,31 @@ def home(request):
             if dias[0] not in clases_unicas[nombre]['dias']:
                 clases_unicas[nombre]['dias'].append(dias[0])
 
+    # Obtener las últimas noticias
+    ultimas_noticias = Noticia.objects.all().order_by('-fecha_publicacion')[:3]  # Obtén las últimas 3 noticias
+    
+    
+    
     context = {
         'clases': clases_unicas.values(),
+        'ultimas_noticias': ultimas_noticias,  # Pasa las últimas noticias al contexto
+        
     }
 
     # Renderiza la plantilla y envía el contexto
     return render(request, 'tienda/index.html', context)
+
+
+@user_passes_test(lambda user: user.is_superuser)
+def agregar_noticia(request):
+    if request.method == 'POST':
+        form = NoticiaForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('tienda:home')  # Redirige a la página que muestra la lista de noticias
+    else:
+        form = NoticiaForm()
+    return render(request, 'tienda/agregar_noticia.html', {'form': form})
 
 def calcular_precio_total(precio_base, cupos, nombre_clase):
     aumento_por_clase = 500
@@ -766,4 +785,6 @@ def agregar_clase_natacion(request):
         clase_form = ClaseNatacionForm()
 
     return render(request, 'tienda/agregar_clase.html', {'clase_form': clase_form})
+
+
 

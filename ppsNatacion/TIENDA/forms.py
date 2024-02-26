@@ -1,5 +1,5 @@
 from django import forms
-from .models import ClaseNatacion, ComprasClase, InscripcionClase
+from .models import ClaseNatacion, ComprasClase, InscripcionClase , Noticia
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.db.models import Q
@@ -226,3 +226,11 @@ class InscripcionForm(forms.ModelForm):
         
         # Cambiar el texto del label para el campo 'cupos_disponibles_pagos'
         self.fields['clase_natacion'].label = "Elige una clase de natación disponible:"
+
+
+
+
+class NoticiaForm(forms.ModelForm):
+    class Meta:
+        model = Noticia
+        fields = ['titulo', 'resumen', 'contenido', 'imagen']

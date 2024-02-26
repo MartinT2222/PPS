@@ -2,50 +2,20 @@
 {% load static %}
 
 {% block carrusel %}
-<!--comienza carrusel-->
-<div id="carouselExampleIndicators" class="carousel slide">
-  <div class="carousel-indicators">
-    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
-      aria-current="true" aria-label="Slide 1"></button>
-    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-  </div>
-  <div class="carousel-inner">
-    <div class="carousel-item active d-item active">
-      <img src="{% static 'media/img/R.jpeg' %}" class="d-block w-100 d-img" alt="...">
-    </div>
-    <div class="carousel-item d-item">
-      <img src="{% static 'media/img/agua2.jpg' %}" class="d-block w-100 d-img" alt="...">
-    </div>
-    <div class="carousel-item d-item">
-      <img src="{% static 'media/img/R.jpeg' %}" class="d-block w-100 d-img" alt="...">
-    </div>
-  </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
-    data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
-    data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
-</div>
-<!--fin carrusel-->
-
+  {% include 'extracciones/carrucel.html' %}
 {% endblock carrusel %}
 
 {% block presentacion %}
-
 <div>
-  <h1 id="presentacion">Estamos para garantizarte un buen servicio, con los mejores profecionales a tu disposicion</h1>
+  <h1 id="presentacion">Estamos para garantizarte un buen servicio, con los mejores profesionales a tu disposición</h1>
 </div>
-
 {% endblock presentacion %}
 
-{% block body %}
+{% block noticias %}
+  {% include 'extracciones/noticias.html' %}
+{% endblock noticias %}
 
+{% block body %}
 <h2 style="width: 100%; height: 100%;">Tipos de Clases</h2>
 <div class="d-flex flex-wrap">
   {% for clase in clases %}
@@ -111,10 +81,7 @@
         onclick="redirectToPagoProducto()">
         Descripción del pago
       </button>
-
       <!-- Botón para modificar clase -->
-      
-
       <!-- Resto de la información -->
       <!-- Agrega un botón o enlace para redirigir a más detalles si es necesario -->
     </div>
